@@ -45,7 +45,7 @@ public class Player : MonoBehaviour
             jumpVelocity = 0f;
 
         float targetX = centerX + lane * laneWidth;
-        currentX = Mathf.MoveTowards(currentX, targetX, laneSpeed * Time.fixedDeltaTime); // ✅
+        currentX = Mathf.MoveTowards(currentX, targetX, laneSpeed * Time.fixedDeltaTime);
 
         Vector3 p = rb.position;
         p.z += speed * Time.fixedDeltaTime;
