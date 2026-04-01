@@ -8,8 +8,14 @@ public class Player : MonoBehaviour
     public float gravity = 20f;
     public float jumpHeight = 15f;
 
+    public float velocidadeBase = 5f;
+    public float fatorAumento = 0.1f;
+    public float velocidadeMaxima = 20f;
+    private float velocidadeAtual;
+
+    private float tempoDeJogo = 0f;
+
     private Rigidbody rb;
-    private ScoreManager scoreManager;
 
     private int lane = 0;
     private float centerX;
@@ -21,18 +27,17 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        if (!estaVivo) return;
         rb = GetComponent<Rigidbody>();
-        scoreManager = FindObjectOfType<ScoreManager>();
-
         centerX = rb.position.x;
         groundY = rb.position.y;
         currentX = centerX;
+        velocidadeAtual = velocidadeBase;
     }
 
     void Update()
     {
         if (!estaVivo) return;
+
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
             lane = Mathf.Max(lane - 1, -1);
 
@@ -46,7 +51,14 @@ public class Player : MonoBehaviour
     void FixedUpdate()
     {
         if (!estaVivo) return;
-        
+
+        tempoDeJogo += Time.fixedDeltaTime;
+
+        velocidadeAtual = Mathf.Min(
+            velocidadeBase + (tempoDeJogo * fatorAumento),
+            velocidadeMaxima
+        );
+
         if (!IsGrounded())
             jumpVelocity -= gravity * Time.fixedDeltaTime;
         else if (jumpVelocity < 0f)
@@ -56,7 +68,7 @@ public class Player : MonoBehaviour
         currentX = Mathf.MoveTowards(currentX, targetX, laneSpeed * Time.fixedDeltaTime);
 
         Vector3 p = rb.position;
-        p.z += scoreManager.VelocidadeAtual * Time.fixedDeltaTime;
+        p.z += velocidadeAtual * Time.fixedDeltaTime;
         p.x = currentX;
         p.y += jumpVelocity * Time.fixedDeltaTime;
 
@@ -71,11 +83,11 @@ public class Player : MonoBehaviour
 
     bool IsGrounded() => rb.position.y <= groundY + 0.1f;
 
-  public void Morrer()
-{
-    estaVivo = false;
-    jumpVelocity = 0f;
-    rb.linearVelocity = Vector3.zero; // zera qualquer velocidade residual do Rigidbody
-    rb.isKinematic = true; // desativa a física completamente
-}
+    public void Morrer()
+    {
+        estaVivo = false;
+        jumpVelocity = 0f;
+        rb.isKinematic = true;
+        rb.linearVelocity = Vector3.zero;
+    }
 }

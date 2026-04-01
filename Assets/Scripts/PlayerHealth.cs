@@ -13,7 +13,6 @@ public class PlayerHealth : MonoBehaviour
         // so tenho este objeto com o script game controller
         gc = FindObjectOfType<GameController>();
         scoreManager = FindObjectOfType<ScoreManager>();    
-        //scoreManager = FindObjectOfType<ScoreManager>();    
     }
 
     private void OnCollisionEnter(Collision collision)
