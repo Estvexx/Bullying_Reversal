@@ -10,12 +10,8 @@ public class GameController : MonoBehaviour
     public GameObject Button_Back_to_Menu;
 
     public TextMeshProUGUI scoreFinalText;
-
-    private ScoreManager scoreManager;
-
     void Start()
     {
-        scoreManager = FindFirstObjectByType<ScoreManager>();
     }
 
     public void GameOverScreen()
