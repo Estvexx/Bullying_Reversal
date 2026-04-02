@@ -48,6 +48,7 @@ public class PlayerHealth : MonoBehaviour
     {
         GetComponent<Player>().Morrer();
         FindFirstObjectByType<ScoreManager>().PararScore();
+        FindFirstObjectByType<BookManager>().PararContagem();
         anim.SetTrigger("die");
 
         StartCoroutine(WaitAndPause());
