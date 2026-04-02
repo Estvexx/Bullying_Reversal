@@ -90,4 +90,5 @@ public class Player : MonoBehaviour
         rb.isKinematic = true;
         rb.linearVelocity = Vector3.zero;
     }
+    
 }
