@@ -1716,6 +1716,7 @@ MonoBehaviour:
   fatorAumento: 0.3
   velocidadeMaxima: 25
   estaVivo: 1
+  tempoAnimacaoEntrada: 2
 --- !u!4 &1285314502 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3abe2100391f0634c8ca8c7fae9cda0a, type: 3}
@@ -1896,7 +1897,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3abe2100391f0634c8ca8c7fae9cda0a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -9.97
+      value: -48.26
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3abe2100391f0634c8ca8c7fae9cda0a, type: 3}
       propertyPath: m_LocalRotation.w
