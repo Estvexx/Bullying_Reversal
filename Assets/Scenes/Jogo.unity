@@ -23,7 +23,7 @@ RenderSettings:
   m_AmbientSkyColor: {r: 1, g: 1, b: 1, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
-  m_AmbientIntensity: 1
+  m_AmbientIntensity: 0
   m_AmbientMode: 1
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 2100000, guid: b74e79a355bb9404abf1e5c42a6cb225, type: 2}
@@ -93,7 +93,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 20201, guid: 0000000000000000f000000000000000, type: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 8e902fc836da6994ba2e301301e911d9, type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
@@ -806,7 +806,7 @@ MonoBehaviour:
   m_RendererIndex: -1
   m_VolumeLayerMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 4294967295
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 1
@@ -896,7 +896,7 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 55
   m_RenderingLayerMask: 1
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
@@ -922,7 +922,7 @@ Transform:
   m_GameObject: {fileID: 410087039}
   serializedVersion: 2
   m_LocalRotation: {x: -0.41560856, y: -0.16438332, z: 0.07665319, w: -0.8912755}
-  m_LocalPosition: {x: -0.48, y: 18.6, z: -32.58}
+  m_LocalPosition: {x: 0.82, y: 21.65, z: -29.18}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -945,7 +945,7 @@ MonoBehaviour:
   m_CustomShadowLayers: 0
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
-  m_SoftShadowQuality: 1
+  m_SoftShadowQuality: 2
   m_RenderingLayersMask:
     serializedVersion: 0
     m_Bits: 1
@@ -2008,8 +2008,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpawnPlatform
   platformPrefabs:
   - {fileID: 6054775108777181391, guid: 6003c48a2fdc5f9448cfac250683a5ef, type: 3}
-  - {fileID: 6054775108777181391, guid: c1cd16ed7369a6d4b95b490af610b28e, type: 3}
-  - {fileID: 6054775108777181391, guid: 6d81445be6d3e9849be4aaca55e46ba4, type: 3}
+  - {fileID: 6054775108777181391, guid: e3ad6795d57ea8e44bc21248abd52974, type: 3}
+  - {fileID: 6054775108777181391, guid: 47a62ea05ece9e54580860ad66c13095, type: 3}
   currentPlatforms: []
   offset: 0
 --- !u!4 &1467443240
@@ -2476,9 +2476,9 @@ SceneRoots:
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 1384821585}
-  - {fileID: 1467443240}
   - {fileID: 1320488255}
   - {fileID: 728239446}
   - {fileID: 633133163}
   - {fileID: 1943814583}
   - {fileID: 1889448963}
+  - {fileID: 1467443240}

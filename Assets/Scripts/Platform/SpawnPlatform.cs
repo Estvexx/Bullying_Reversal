@@ -13,15 +13,15 @@ public class SpawnPlatform : MonoBehaviour
         for (int i = 0; i < platformPrefabs.Count; i++)
         {
             GameObject prefab = platformPrefabs[i];
-            Transform p = Instantiate(prefab, new Vector3(0, 0, i * 42), prefab.transform.rotation).transform;
+            Transform p = Instantiate(prefab, new Vector3(0, 0, i * 100), prefab.transform.rotation).transform;
             currentPlatforms.Add(p);
-            offset += 42;
+            offset += 100;
         }
     }
 
     public void Recycle(GameObject platform)
     {
         platform.transform.position = new Vector3(0, 0, offset);
-        offset += 42;
+        offset += 100;
     }
 }
