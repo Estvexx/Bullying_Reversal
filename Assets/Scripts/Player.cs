@@ -2,11 +2,16 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    private Rigidbody rb;
+    private Animator animator;
+    public Transform groundCheck;
+    private Coroutine rollCoroutine;
     public float laneWidth = 2.5f;
     public float laneSpeed = 10f;
 
     public float gravity = 20f;
-    public float jumpHeight = 15f;
+    public float gravityRoll = 50f;
+    public float jumpHeight = 10f;
 
     public float velocidadeBase = 5f;
     public float fatorAumento = 0.1f;
@@ -15,9 +20,6 @@ public class Player : MonoBehaviour
 
     private float tempoDeJogo = 0f;
 
-    private Rigidbody rb;
-    private Animator animator;
-
     private int lane = 0;
     private float centerX;
     private float groundY;
@@ -25,9 +27,11 @@ public class Player : MonoBehaviour
     private float jumpVelocity = 0f;
 
     public bool estaVivo = true;
-    private bool estaIniciando = true;
+    private bool pausa_iniciarJogo = true;
     private bool estaARolar = false;
     public float tempoAnimacaoEntrada = 20f;
+
+
 
     void Start()
     {
@@ -40,11 +44,12 @@ public class Player : MonoBehaviour
         velocidadeAtual = velocidadeBase;
 
         StartCoroutine(AnimacaoEntrada());
+
     }
 
     void Update()
     {
-        if (!estaVivo || estaIniciando) return;
+        if (!estaVivo || pausa_iniciarJogo) return;
 
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
             lane = Mathf.Max(lane - 1, -1);
@@ -52,25 +57,38 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
             lane = Mathf.Min(lane + 1, 1);
 
-        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W)) && IsGrounded())
         {
-            
+            if (estaARolar)
+            {
+                StopCoroutine(rollCoroutine);
+                estaARolar = false;
+            }
             jumpVelocity = jumpHeight;
             animator.SetTrigger("Jump");
         }
 
-        if (Input.GetKeyDown(KeyCode.S) && IsGrounded() && !estaARolar)
+        if ((Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.LeftShift)) && !estaARolar)
         {
-            StartCoroutine(Rolar());
+            rollCoroutine = StartCoroutine(Rolar());
             animator.SetTrigger("Roll");
         }
 
         animator.SetBool("isGrounded", IsGrounded());
+
+        /* if (IsGrounded())
+        {
+            Debug.Log("Player is grounded");
+        }
+        else
+        {
+            Debug.Log("Player is in the air");
+        } */
     }
 
     void FixedUpdate()
     {
-        if (!estaVivo || estaIniciando) return;
+        if (!estaVivo || pausa_iniciarJogo) return;
 
         tempoDeJogo += Time.fixedDeltaTime;
 
@@ -80,7 +98,12 @@ public class Player : MonoBehaviour
         );
 
         if (!IsGrounded())
-            jumpVelocity -= gravity * Time.fixedDeltaTime;
+        {
+            if (estaARolar)
+                jumpVelocity -= gravityRoll * Time.fixedDeltaTime;
+            else
+                jumpVelocity -= gravity * Time.fixedDeltaTime;
+        }
         else if (jumpVelocity < 0f)
             jumpVelocity = 0f;
 
@@ -101,8 +124,10 @@ public class Player : MonoBehaviour
         rb.MovePosition(p);
     }
 
-    bool IsGrounded() => rb.position.y <= groundY + 0.1f;
-
+    bool IsGrounded()
+    {
+        return Physics.Raycast(groundCheck.position, Vector3.down, 0.4f);
+    }
     public void Morrer()
     {
         estaVivo = false;
@@ -110,20 +135,31 @@ public class Player : MonoBehaviour
         rb.isKinematic = true;
         rb.linearVelocity = Vector3.zero;
     }
-    
+
     private System.Collections.IEnumerator AnimacaoEntrada()
     {
         yield return new WaitForSeconds(5);
-
-        // Depois transita para o Run
         animator.SetTrigger("StartRun");
-        estaIniciando = false; // liberta o movimento
+        pausa_iniciarJogo = false;
     }
 
     private System.Collections.IEnumerator Rolar()
     {
         estaARolar = true;
-        yield return new WaitForSeconds(1.23f);
-        estaARolar = false; 
+        yield return new WaitForSeconds(0.72f);
+        estaARolar = false;
     }
+
+    /* void OnDrawGizmos()
+    {
+        if (groundCheck == null) return;
+
+        Gizmos.color = Color.red;
+
+        Vector3 start = groundCheck.position;
+        Vector3 end = groundCheck.position + Vector3.down * 0.3f;
+
+        Gizmos.DrawLine(start, end);
+        Gizmos.DrawSphere(end, 0.05f);
+    } */
 }
