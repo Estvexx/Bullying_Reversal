@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
     private float tempoDeJogo = 0f;
 
     private Rigidbody rb;
+    private Animator animator;
 
     private int lane = 0;
     private float centerX;
@@ -24,19 +25,26 @@ public class Player : MonoBehaviour
     private float jumpVelocity = 0f;
 
     public bool estaVivo = true;
+    private bool estaIniciando = true;
+    private bool estaARolar = false;
+    public float tempoAnimacaoEntrada = 20f;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
+
         centerX = rb.position.x;
         groundY = rb.position.y;
         currentX = centerX;
         velocidadeAtual = velocidadeBase;
+
+        StartCoroutine(AnimacaoEntrada());
     }
 
     void Update()
     {
-        if (!estaVivo) return;
+        if (!estaVivo || estaIniciando) return;
 
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
             lane = Mathf.Max(lane - 1, -1);
@@ -45,12 +53,24 @@ public class Player : MonoBehaviour
             lane = Mathf.Min(lane + 1, 1);
 
         if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
+        {
+            
             jumpVelocity = jumpHeight;
+            animator.SetTrigger("Jump");
+        }
+
+        if (Input.GetKeyDown(KeyCode.S) && IsGrounded() && !estaARolar)
+        {
+            StartCoroutine(Rolar());
+            animator.SetTrigger("Roll");
+        }
+
+        animator.SetBool("isGrounded", IsGrounded());
     }
 
     void FixedUpdate()
     {
-        if (!estaVivo) return;
+        if (!estaVivo || estaIniciando) return;
 
         tempoDeJogo += Time.fixedDeltaTime;
 
@@ -91,4 +111,19 @@ public class Player : MonoBehaviour
         rb.linearVelocity = Vector3.zero;
     }
     
+    private System.Collections.IEnumerator AnimacaoEntrada()
+    {
+        yield return new WaitForSeconds(5);
+
+        // Depois transita para o Run
+        animator.SetTrigger("StartRun");
+        estaIniciando = false; // liberta o movimento
+    }
+
+    private System.Collections.IEnumerator Rolar()
+    {
+        estaARolar = true;
+        yield return new WaitForSeconds(1.23f);
+        estaARolar = false; 
+    }
 }
