@@ -10,8 +10,8 @@ public class MenuController : MonoBehaviour
 
     void Start()
     {
-        ultimaPontuacaoText.text = "Ult Pontuação: " + PlayerPrefs.GetInt("UltimaPontuacao", 0);
-        recordeText.text = "Recorde: " + PlayerPrefs.GetInt("Recorde", 0);
+        ultimaPontuacaoText.text = "" + PlayerPrefs.GetInt("UltimaPontuacao", 0);
+        recordeText.text = "" + PlayerPrefs.GetInt("Recorde", 0);
         booksText.text = "Livros: " + PlayerPrefs.GetInt("Books", 0);
     }
 
