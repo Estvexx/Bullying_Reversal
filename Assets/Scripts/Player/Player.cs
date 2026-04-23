@@ -4,18 +4,19 @@ public class Player : MonoBehaviour
 {
     private Rigidbody rb;
     private Animator animator;
-    public Transform groundCheck;
+    public Transform groundCheck; // objeto nos pés do meco
     private Coroutine rollCoroutine;
     public float laneWidth = 2.5f;
     public float laneSpeed = 10f;
 
     public float gravity = 20f;
-    public float gravityRoll = 50f;
+    public float gravityRoll = 80f;
     public float jumpHeight = 10f;
 
-    public float velocidadeBase = 5f;
+    public float velocidadeBase = 10f;
+    public float velocidadeMaxima = 25f;
     public float fatorAumento = 0.1f;
-    public float velocidadeMaxima = 20f;
+
     private float velocidadeAtual;
 
     private float tempoDeJogo = 0f;
@@ -76,14 +77,6 @@ public class Player : MonoBehaviour
 
         animator.SetBool("isGrounded", IsGrounded());
 
-        /* if (IsGrounded())
-        {
-            Debug.Log("Player is grounded");
-        }
-        else
-        {
-            Debug.Log("Player is in the air");
-        } */
     }
 
     void FixedUpdate()
@@ -149,17 +142,19 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(0.72f);
         estaARolar = false;
     }
-
-    /* void OnDrawGizmos()
+    void JumpDebug()
     {
-        if (groundCheck == null) return;
-
-        Gizmos.color = Color.red;
-
-        Vector3 start = groundCheck.position;
-        Vector3 end = groundCheck.position + Vector3.down * 0.3f;
-
-        Gizmos.DrawLine(start, end);
-        Gizmos.DrawSphere(end, 0.05f);
-    } */
-}
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("Space key pressed");
+            if (IsGrounded())
+            {
+                Debug.Log("Player is grounded");
+            }
+            else
+            {
+                Debug.Log("Player is in the air");
+            }
+        }
+    }
+}   

@@ -7,6 +7,8 @@ public class BookManager : MonoBehaviour
     private int livros = 0;
     private int Books_Coletados = 0;
     private int QntAtualBooks;
+    private bool contagemParada = false;
+
 
     
 public void AdicionarLivro()
@@ -17,13 +19,18 @@ public void AdicionarLivro()
 }
     public void PararContagem()
     {
+        
+        if(contagemParada == false){
         Books_Coletados = Mathf.FloorToInt(livros);
+        PlayerPrefs.SetInt("UltimaBooks", Books_Coletados);
         QntAtualBooks = PlayerPrefs.GetInt("Books", 0);
         QntAtualBooks += Books_Coletados;
         PlayerPrefs.SetInt("Books", QntAtualBooks);        
         
         PlayerPrefs.Save();
         StartCoroutine(EsconderTexto());
+        contagemParada = true;
+        }
     }
 
     private System.Collections.IEnumerator EsconderTexto()
