@@ -2076,12 +2076,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08ae0a4c97a76404a8ccad71b0fac593, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScoreManager
-  Background_Score: {fileID: 0}
+  Background_Score: {fileID: 1711396095}
   scoreText: {fileID: 1765546882}
-  Background_Multi: {fileID: 0}
+  Background_Multi: {fileID: 2076186118}
   multiplierText: {fileID: 2133517794}
-  Background_Books: {fileID: 0}
-  booksText: {fileID: 0}
+  Background_Books: {fileID: 1973392738}
+  booksText: {fileID: 1265450040}
   score: 0
   intervaloMultiplier: 10
   multiplierMaximo: 5
