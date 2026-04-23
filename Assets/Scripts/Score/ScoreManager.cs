@@ -3,7 +3,13 @@ using TMPro;
 
 public class ScoreManager : MonoBehaviour
 {
+    public GameObject Background_Score;
     public TextMeshProUGUI scoreText;
+    public GameObject Background_Multi;    
+    public TextMeshProUGUI multiplierText;
+    public GameObject Background_Books;
+    public TextMeshProUGUI booksText;
+
 
     public float score = 0f;
 
@@ -28,7 +34,8 @@ public class ScoreManager : MonoBehaviour
         }
 
         score += multiplier * Time.deltaTime * 10; // 10 é só para a pontucao ser mais rapide
-        scoreText.text = Mathf.FloorToInt(score) + " x" + multiplier;
+        scoreText.text = (Mathf.FloorToInt(score)).ToString();
+        multiplierText.text = multiplier.ToString();
     }
 
     public void PararScore()
@@ -51,7 +58,12 @@ public class ScoreManager : MonoBehaviour
     private System.Collections.IEnumerator EsconderTexto()
     {
         yield return new WaitForSeconds(3.3f);
+        Background_Score.gameObject.SetActive(false);
         scoreText.gameObject.SetActive(false);
+        Background_Multi.gameObject.SetActive(false);
+        multiplierText.gameObject.SetActive(false);
+        Background_Books.gameObject.SetActive(false);
+        booksText.gameObject.SetActive(false);
     }
 
 }
