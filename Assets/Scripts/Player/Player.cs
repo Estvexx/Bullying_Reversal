@@ -5,6 +5,7 @@ public class Player : MonoBehaviour
     private Rigidbody rb;
     private Animator animator;
     public Transform groundCheck; // objeto nos pés do meco
+    public ParticleSystem poDosPassos;
     private Coroutine rollCoroutine;
     public float laneWidth = 2.5f;
     public float laneSpeed = 10f;
@@ -50,6 +51,8 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        AtualizarPoeira();
+
         if (!estaVivo || pausa_iniciarJogo) return;
 
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
@@ -134,6 +137,8 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(5);
         animator.SetTrigger("StartRun");
         pausa_iniciarJogo = false;
+
+        FindObjectOfType<ScoreManager>().IniciarScore();
     }
 
     private System.Collections.IEnumerator Rolar()
@@ -142,6 +147,30 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(0.72f);
         estaARolar = false;
     }
+
+    void AtualizarPoeira()
+    {
+        if (!estaVivo || pausa_iniciarJogo)
+        {
+            poDosPassos.Stop();
+            return;
+        }
+
+        if (IsGrounded() && !estaARolar)
+        {
+            if (!poDosPassos.isPlaying)
+            {
+                Debug.Log("A iniciar poeira!");
+                poDosPassos.Play();
+            }
+        }
+        else
+        {
+            if (poDosPassos.isPlaying)
+                poDosPassos.Stop();
+        }
+    }
+
     void JumpDebug()
     {
         if (Input.GetKeyDown(KeyCode.Space))
@@ -157,4 +186,4 @@ public class Player : MonoBehaviour
             }
         }
     }
-}   
+}
