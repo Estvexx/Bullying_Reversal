@@ -70,12 +70,14 @@ public class Player : MonoBehaviour
             }
             jumpVelocity = jumpHeight;
             animator.SetTrigger("Jump");
+            SomManager.Instance.TocarSalto();
         }
 
         if ((Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.LeftShift)) && !estaARolar)
         {
             rollCoroutine = StartCoroutine(Rolar());
             animator.SetTrigger("Roll");
+            SomManager.Instance.TocarRoll();
         }
 
         animator.SetBool("isGrounded", IsGrounded());
