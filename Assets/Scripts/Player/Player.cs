@@ -134,6 +134,8 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(5);
         animator.SetTrigger("StartRun");
         pausa_iniciarJogo = false;
+
+        FindObjectOfType<ScoreManager>().IniciarScore();
     }
 
     private System.Collections.IEnumerator Rolar()

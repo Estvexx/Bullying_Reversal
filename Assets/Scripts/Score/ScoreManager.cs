@@ -5,7 +5,7 @@ public class ScoreManager : MonoBehaviour
 {
     public GameObject Background_Score;
     public TextMeshProUGUI scoreText;
-    public GameObject Background_Multi;    
+    public GameObject Background_Multi;
     public TextMeshProUGUI multiplierText;
     public GameObject Background_Books;
     public TextMeshProUGUI booksText;
@@ -21,9 +21,16 @@ public class ScoreManager : MonoBehaviour
     private bool jogoAtivo = true;
     private int scoreFinal = 0;
 
+    private bool jogoIniciado = false;
+
+    public void IniciarScore()
+    {
+        jogoIniciado = true;
+    }
+
     void Update()
     {
-        if (!jogoAtivo) return;
+        if (!jogoAtivo || !jogoIniciado) return;
 
         tempoDecorrido += Time.deltaTime;
 
