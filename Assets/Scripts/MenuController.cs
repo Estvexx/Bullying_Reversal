@@ -7,12 +7,11 @@ public class MenuController : MonoBehaviour
     public TextMeshProUGUI ultimaPontuacaoText;
     public TextMeshProUGUI recordeText;
     public TextMeshProUGUI booksText;
-
     void Start()
     {
-        ultimaPontuacaoText.text = "Ult Pontuação: " + PlayerPrefs.GetInt("UltimaPontuacao", 0);
-        recordeText.text = "Recorde: " + PlayerPrefs.GetInt("Recorde", 0);
-        booksText.text = "Livros: " + PlayerPrefs.GetInt("Books", 0);
+        ultimaPontuacaoText.text = "" + PlayerPrefs.GetInt("UltimaPontuacao", 0);
+        recordeText.text = "" + PlayerPrefs.GetInt("Recorde", 0);
+        booksText.text = "" + PlayerPrefs.GetInt("Books", 0);
     }
 
     public void Jogar()
@@ -32,9 +31,8 @@ public class MenuController : MonoBehaviour
     public void EliminarDados()
     {
         PlayerPrefs.DeleteAll();
-        ultimaPontuacaoText.text = "Última Pontuação: 0";
-        recordeText.text = "Recorde: 0";
-        booksText.text = "Livros: 0";
-        Debug.Log("Dados deletados!");
+        ultimaPontuacaoText.text = "0";
+        recordeText.text = "0";
+        booksText.text = "0";
     }
 }
