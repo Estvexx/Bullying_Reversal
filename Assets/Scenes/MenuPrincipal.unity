@@ -1597,7 +1597,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 427427924}
         m_TargetAssemblyTypeName: MenuController, Assembly-CSharp
-        m_MethodName: EliminarDados
+        m_MethodName: AbrirDefinicoes
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
