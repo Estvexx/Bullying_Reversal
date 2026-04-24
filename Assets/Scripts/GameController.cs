@@ -10,10 +10,13 @@ public class GameController : MonoBehaviour
     public GameObject Button_Back_to_Menu;
     public GameObject Tittle;
     public GameObject Character;
+    public GameObject RawImage;
     public GameObject Background_Current_Score;
     public TextMeshProUGUI scoreFinalText;
     public GameObject Background_Current_Books;
     public TextMeshProUGUI booksFinalText;
+
+    public PersonagemGameOver personagemGameOver;
 
     void Start()
     {
@@ -28,11 +31,14 @@ public class GameController : MonoBehaviour
         Button_Back_to_Menu.SetActive(true);
         Tittle.SetActive(true);
         Character.SetActive(true);
+        RawImage.SetActive(true);
         Background_Current_Score.SetActive(true);
         Background_Current_Books.SetActive(true);
 
         scoreFinalText.text = "" + PlayerPrefs.GetInt("UltimaPontuacao", 0);
         booksFinalText.text = "" + PlayerPrefs.GetInt("UltimaBooks", 0);
+
+        personagemGameOver.TocarDanca();
         
     }
 
