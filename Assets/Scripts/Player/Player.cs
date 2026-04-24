@@ -70,12 +70,14 @@ public class Player : MonoBehaviour
             }
             jumpVelocity = jumpHeight;
             animator.SetTrigger("Jump");
+            SomManager.Instance.TocarSalto();
         }
 
         if ((Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.LeftShift)) && !estaARolar)
         {
             rollCoroutine = StartCoroutine(Rolar());
             animator.SetTrigger("Roll");
+            SomManager.Instance.TocarRoll();
         }
 
         animator.SetBool("isGrounded", IsGrounded());
@@ -150,6 +152,12 @@ public class Player : MonoBehaviour
 
     void AtualizarPoeira()
     {
+        if (PlayerPrefs.GetInt("Efeitos", 1) == 0)
+        {
+            poDosPassos.Stop();
+            return;
+        }
+
         if (!estaVivo || pausa_iniciarJogo)
         {
             poDosPassos.Stop();
