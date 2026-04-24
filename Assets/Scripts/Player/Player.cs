@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
 
     private int lane = 0;
     private float centerX;
-    private float groundY;
+    public float groundY;
     private float currentX;
     private float jumpVelocity = 0f;
 
@@ -135,7 +135,13 @@ public class Player : MonoBehaviour
         jumpVelocity = 0f;
         rb.isKinematic = true;
         rb.linearVelocity = Vector3.zero;
+        Vector3 p = rb.position;
+        p.y = groundY;
+        rb.position = p;
+
         inimigo.ExecutarRir();
+
+
     }
 
     private System.Collections.IEnumerator AnimacaoEntrada()

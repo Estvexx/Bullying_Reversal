@@ -106,6 +106,11 @@ public class InimigoController : MonoBehaviour
         aRir = true;
         posicoes.Clear();
         filaGrounded.Clear();
+        Vector3 p = transform.position;
+        p.y = player.groundY;
+        transform.position = p;
         animator.SetTrigger("rir");
+
+
     }
 }
