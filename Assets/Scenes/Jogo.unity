@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 0
   m_AmbientMode: 1
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: b74e79a355bb9404abf1e5c42a6cb225, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: cb879a436a7692845a0f2ed7883aa098, type: 2}
   m_HaloStrength: 0.495
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -3187,6 +3187,7 @@ MonoBehaviour:
   somSalto: {fileID: 8300000, guid: d5fbfe3ed2b765146ae99fe092bc3b8e, type: 3}
   somRoll: {fileID: 8300000, guid: 319bf1d0b8b9bad45b5002af68703267, type: 3}
   somBook: {fileID: 8300000, guid: 0ffec0e113de87e418532edc97618b50, type: 3}
+  musicaAmbiente: {fileID: 8300000, guid: 209cd3b6aaff8c84d96f18b471ea0780, type: 3}
 --- !u!4 &2057378244
 Transform:
   m_ObjectHideFlags: 0

@@ -16,9 +16,11 @@ public class BookPickup : MonoBehaviour
         {
             bookManager.AdicionarLivro();
             SomManager.Instance.TocarBook();
-
-            GameObject efeito = Instantiate(efeitoMoeda, other.transform.position, Quaternion.identity);
-            Destroy(efeito, 1f);
+            if (PlayerPrefs.GetInt("Efeitos", 1) == 1)
+            {
+                GameObject efeito = Instantiate(efeitoMoeda, other.transform.position, Quaternion.identity);
+                Destroy(efeito, 1f);
+            }
 
             other.gameObject.SetActive(false);
         }

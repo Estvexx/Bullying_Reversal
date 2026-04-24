@@ -7,13 +7,23 @@ public class SomManager : MonoBehaviour
     public AudioClip somSalto;
     public AudioClip somRoll;
     public AudioClip somBook;
+    public AudioClip musicaAmbiente;
 
-    private AudioSource audioSource;
+    public AudioSource audioSource;
 
-    void Awake()
+    void Awake() //tem de vir antes d o start
     {
         Instance = this;
         audioSource = GetComponent<AudioSource>();
+    }
+
+    void Start()
+    {
+        audioSource.volume = PlayerPrefs.GetFloat("VolumeMusica", 1f);
+        AudioListener.volume = PlayerPrefs.GetFloat("VolumeSons", 1f);
+        audioSource.clip = musicaAmbiente;
+        audioSource.loop = true;
+        audioSource.Play();
     }
 
     public void TocarSalto() => audioSource.PlayOneShot(somSalto);

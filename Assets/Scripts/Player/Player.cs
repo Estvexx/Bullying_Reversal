@@ -152,6 +152,12 @@ public class Player : MonoBehaviour
 
     void AtualizarPoeira()
     {
+        if (PlayerPrefs.GetInt("Efeitos", 1) == 0)
+        {
+            poDosPassos.Stop();
+            return;
+        }
+
         if (!estaVivo || pausa_iniciarJogo)
         {
             poDosPassos.Stop();
