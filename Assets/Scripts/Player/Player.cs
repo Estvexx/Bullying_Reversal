@@ -18,7 +18,7 @@ public class Player : MonoBehaviour
     public float velocidadeMaxima = 25f;
     public float fatorAumento = 0.1f;
 
-    private float velocidadeAtual;
+    public float velocidadeAtual;
 
     private float tempoDeJogo = 0f;
 
@@ -33,7 +33,7 @@ public class Player : MonoBehaviour
     private bool estaARolar = false;
     public float tempoAnimacaoEntrada = 20f;
 
-
+    private InimigoController inimigo;
 
     void Start()
     {
@@ -46,6 +46,7 @@ public class Player : MonoBehaviour
         velocidadeAtual = velocidadeBase;
 
         StartCoroutine(AnimacaoEntrada());
+        inimigo = FindFirstObjectByType<InimigoController>();
 
     }
 
@@ -70,12 +71,16 @@ public class Player : MonoBehaviour
             }
             jumpVelocity = jumpHeight;
             animator.SetTrigger("Jump");
+            inimigo.ReplicarJump();
+            SomManager.Instance.TocarSalto();
         }
 
         if ((Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.LeftShift)) && !estaARolar)
         {
             rollCoroutine = StartCoroutine(Rolar());
             animator.SetTrigger("Roll");
+            SomManager.Instance.TocarRoll();
+            inimigo.ReplicarRoll();
         }
 
         animator.SetBool("isGrounded", IsGrounded());
@@ -130,13 +135,16 @@ public class Player : MonoBehaviour
         jumpVelocity = 0f;
         rb.isKinematic = true;
         rb.linearVelocity = Vector3.zero;
+        inimigo.ExecutarRir();
     }
 
     private System.Collections.IEnumerator AnimacaoEntrada()
     {
         yield return new WaitForSeconds(5);
         animator.SetTrigger("StartRun");
+        inimigo.ReplicarStartRun();
         pausa_iniciarJogo = false;
+        inimigo.IniciarPerseguicao();
 
         FindObjectOfType<ScoreManager>().IniciarScore();
     }
@@ -150,6 +158,12 @@ public class Player : MonoBehaviour
 
     void AtualizarPoeira()
     {
+        if (PlayerPrefs.GetInt("Efeitos", 1) == 0)
+        {
+            poDosPassos.Stop();
+            return;
+        }
+
         if (!estaVivo || pausa_iniciarJogo)
         {
             poDosPassos.Stop();

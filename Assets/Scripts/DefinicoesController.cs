@@ -39,10 +39,11 @@ public class DefinicoesController : MonoBehaviour
     }
     void AplicarVolumes()
     {
-        AudioListener.volume = sliderSons.value;
-
         if (SomManager.Instance != null)
-            SomManager.Instance.audioSource.volume = sliderMusica.value;
+        {
+            SomManager.Instance.audioSourceMusica.volume = sliderMusica.value;
+            SomManager.Instance.audioSourceEfeitos.volume = sliderSons.value;
+        }
     }
 
     public void VoltarMenu()
