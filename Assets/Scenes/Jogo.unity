@@ -2345,7 +2345,10 @@ MonoBehaviour:
   velocidadeAtual: 0
   groundY: 0
   estaVivo: 1
-  tempoAnimacaoEntrada: 2
+  tempoEsperaEntrada: 5
+  tempoRolagem: 0.72
+  distanciaGroundCheck: 0.4
+  scoreManager: {fileID: 1285314504}
 --- !u!4 &1285314502 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3abe2100391f0634c8ca8c7fae9cda0a, type: 3}
@@ -2364,6 +2367,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   anim: {fileID: 1285314499}
+  gc: {fileID: 633133162}
+  scoreManager: {fileID: 1285314504}
+  bookManager: {fileID: 1889448962}
+  tempoAnimacaoMorte: 3.5
   lives: 2
 --- !u!114 &1285314504
 MonoBehaviour:
@@ -2386,6 +2393,8 @@ MonoBehaviour:
   score: 0
   intervaloMultiplier: 10
   multiplierMaximo: 5
+  pontosPorSegundo: 10
+  tempoParaEsconderTexto: 3.3
 --- !u!114 &1285314505
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2398,7 +2407,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbc66f22aba0eae4398656278d1063ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BookPickup
+  bookManager: {fileID: 1889448962}
   efeitoMoeda: {fileID: 2670415890673530561, guid: 24b3861458ac6e045ae8279ee14e94bf, type: 3}
+  tempoReativarLivro: 10
 --- !u!1 &1320488251
 GameObject:
   m_ObjectHideFlags: 0
@@ -3220,6 +3231,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BookManager
   booksText: {fileID: 1265450040}
+  tempoParaEsconderTexto: 3.3
 --- !u!4 &1889448963
 Transform:
   m_ObjectHideFlags: 0
@@ -3252,6 +3264,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12dc5244212fd3e49b8d59865148ec1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InimigoController
+  player: {fileID: 1285314501}
+  intervalo: 0.01
   delay: 0.2
   zAproximacao: 2
   velocidadeAproximacao: 5
@@ -3582,7 +3596,6 @@ MonoBehaviour:
   somRoll: {fileID: 8300000, guid: 319bf1d0b8b9bad45b5002af68703267, type: 3}
   somBook: {fileID: 8300000, guid: 0ffec0e113de87e418532edc97618b50, type: 3}
   musicaAmbiente: {fileID: 8300000, guid: 209cd3b6aaff8c84d96f18b471ea0780, type: 3}
-  audioSource: {fileID: 0}
   audioSourceMusica: {fileID: 2057378242}
   audioSourceEfeitos: {fileID: 2057378245}
 --- !u!4 &2057378244

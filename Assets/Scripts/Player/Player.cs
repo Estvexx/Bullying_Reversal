@@ -1,67 +1,78 @@
 using UnityEngine;
+using System;
+using System.Collections;
 
-public class Player : MonoBehaviour
-{
+public class Player : MonoBehaviour {
     private static readonly int JumpHash = Animator.StringToHash("Jump");
     private static readonly int RollHash = Animator.StringToHash("Roll");
     private static readonly int StartRunHash = Animator.StringToHash("StartRun");
     private static readonly int IsGroundedHash = Animator.StringToHash("isGrounded");
 
-    private Rigidbody rb;
-    private Animator animator;
-    public Transform groundCheck; // objeto nos pés do meco
+    public event Action Jumped;
+    public event Action Rolled;
+    public event Action StartedRunning;
+    public event Action Died;
+
+    public Transform groundCheck;
     public ParticleSystem poDosPassos;
-    private Coroutine rollCoroutine;
+
     public float laneWidth = 2.5f;
     public float laneSpeed = 10f;
-
     public float gravity = 20f;
     public float gravityRoll = 80f;
     public float jumpHeight = 10f;
-
     public float velocidadeBase = 10f;
     public float velocidadeMaxima = 25f;
     public float fatorAumento = 0.1f;
-
     public float velocidadeAtual;
-
-    private float tempoDeJogo = 0f;
-
-    private int lane = 0;
-    private float centerX;
     public float groundY;
-    private float currentX;
-    private float jumpVelocity = 0f;
-
     public bool estaVivo = true;
-    private bool pausa_iniciarJogo = true;
-    private bool estaARolar = false;
+
+    private bool efeitosAtivos;
+    private bool poeiraAtiva;
 
     [SerializeField] private float tempoEsperaEntrada = 5f;
     [SerializeField] private float tempoRolagem = 0.72f;
     [SerializeField] private float distanciaGroundCheck = 0.4f;
-    [SerializeField] private InimigoController inimigo;
     [SerializeField] private ScoreManager scoreManager;
 
-    void Start()
-    {
+    private Rigidbody rb;
+    private Animator animator;
+    private Coroutine rollCoroutine;
+
+    private bool jogoIniciado;
+    private bool estaARolar;
+    private float centerX;
+    private float currentX;
+    private float jumpVelocity;
+    private float tempoDeJogo;
+    private int lane;
+
+    private bool PodeJogar => estaVivo && jogoIniciado;
+
+    private void Start() {
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
 
-        centerX = rb.position.x;
+        centerX = currentX = rb.position.x;
         groundY = rb.position.y;
-        currentX = centerX;
         velocidadeAtual = velocidadeBase;
 
-        StartCoroutine(AnimacaoEntrada());
+        efeitosAtivos = PlayerPrefs.GetInt(PlayerPrefsKeys.Efeitos, 1) == 1;
 
+        if (!efeitosAtivos && poDosPassos != null)
+            poDosPassos.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+        StartCoroutine(AnimacaoEntrada());
     }
 
-    void Update()
-    {
-        AtualizarPoeira();
+    private void Update() {
+        bool grounded = IsGrounded();
 
-        if (!estaVivo || pausa_iniciarJogo) return;
+        if (efeitosAtivos) AtualizarPoeira(grounded);
+
+
+        if (!PodeJogar) return;
 
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
             lane = Mathf.Max(lane - 1, -1);
@@ -69,132 +80,99 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
             lane = Mathf.Min(lane + 1, 1);
 
-        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W)) && IsGrounded())
-        {
-            if (estaARolar)
-            {
-                StopCoroutine(rollCoroutine);
-                estaARolar = false;
-            }
-            jumpVelocity = jumpHeight;
-            animator.SetTrigger(JumpHash);
-            inimigo.ReplicarJump();
-            SomManager.Instance.TocarSalto();
-        }
+        if (grounded && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W)))
+            Saltar();
 
-        if ((Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.LeftShift)) && !estaARolar)
-        {
-            rollCoroutine = StartCoroutine(Rolar());
-            animator.SetTrigger(RollHash);
-            SomManager.Instance.TocarRoll();
-            inimigo.ReplicarRoll();
-        }
+        if (!estaARolar && (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.LeftShift)))
+            IniciarRolagem();
 
-        animator.SetBool(IsGroundedHash, IsGrounded());
-
+        animator.SetBool(IsGroundedHash, grounded);
     }
 
-    void FixedUpdate()
-    {
-        if (!estaVivo || pausa_iniciarJogo) return;
+    private void FixedUpdate() {
+        if (!PodeJogar) return;
 
-        tempoDeJogo += Time.fixedDeltaTime;
+        float dt = Time.fixedDeltaTime;
+        bool grounded = IsGrounded();
 
-        velocidadeAtual = Mathf.Min(
-            velocidadeBase + (tempoDeJogo * fatorAumento),
-            velocidadeMaxima
-        );
+        tempoDeJogo += dt;
+        velocidadeAtual = Mathf.Min(velocidadeBase + tempoDeJogo * fatorAumento, velocidadeMaxima);
 
-        if (!IsGrounded())
-        {
-            if (estaARolar)
-                jumpVelocity -= gravityRoll * Time.fixedDeltaTime;
-            else
-                jumpVelocity -= gravity * Time.fixedDeltaTime;
+        if (!grounded) {
+            jumpVelocity -= (estaARolar ? gravityRoll : gravity) * dt;
         }
-        else if (jumpVelocity < 0f)
+        else if (jumpVelocity < 0f) {
             jumpVelocity = 0f;
+        }
 
         float targetX = centerX + lane * laneWidth;
-        currentX = Mathf.MoveTowards(currentX, targetX, laneSpeed * Time.fixedDeltaTime);
+        currentX = Mathf.MoveTowards(currentX, targetX, laneSpeed * dt);
 
-        Vector3 p = rb.position;
-        p.z += velocidadeAtual * Time.fixedDeltaTime;
-        p.x = currentX;
-        p.y += jumpVelocity * Time.fixedDeltaTime;
+        Vector3 pos = rb.position;
+        pos.x = currentX;
+        pos.z += velocidadeAtual * dt;
+        pos.y += jumpVelocity * dt;
 
-        if (p.y < groundY)
-        {
-            p.y = groundY;
+        if (pos.y < groundY) {
+            pos.y = groundY;
             jumpVelocity = 0f;
         }
 
-        rb.MovePosition(p);
+        rb.MovePosition(pos);
     }
 
-    bool IsGrounded()
-    {
-        return Physics.Raycast(groundCheck.position, Vector3.down, distanciaGroundCheck);
-    }
-    public void Morrer()
-    {
+    public void Morrer() {
         estaVivo = false;
         jumpVelocity = 0f;
+
         rb.isKinematic = true;
         rb.linearVelocity = Vector3.zero;
-        Vector3 p = rb.position;
-        p.y = groundY;
-        rb.position = p;
+        rb.position = new Vector3(rb.position.x, groundY, rb.position.z);
 
-        inimigo.ExecutarRir();
-
-
+        Died?.Invoke();
     }
 
-    private System.Collections.IEnumerator AnimacaoEntrada()
-    {
-        yield return new WaitForSeconds(tempoEsperaEntrada);
-        animator.SetTrigger(StartRunHash);
-        inimigo.ReplicarStartRun();
-        pausa_iniciarJogo = false;
-        inimigo.IniciarPerseguicao();
+    private void Saltar() {
+        if (estaARolar) {
+            StopCoroutine(rollCoroutine);
+            estaARolar = false;
+        }
 
-        scoreManager.IniciarScore();
+        jumpVelocity = jumpHeight;
+        animator.SetTrigger(JumpHash);
+        Jumped?.Invoke();
+        SomManager.Instance.TocarSalto();
     }
 
-    private System.Collections.IEnumerator Rolar()
-    {
+    private void IniciarRolagem() {
+        rollCoroutine = StartCoroutine(Rolar());
+        animator.SetTrigger(RollHash);
+        Rolled?.Invoke();
+        SomManager.Instance.TocarRoll();
+    }
+
+    private bool IsGrounded() => Physics.Raycast(groundCheck.position, Vector3.down, distanciaGroundCheck);
+
+    private void AtualizarPoeira(bool grounded) {
+        bool deveTocar = PodeJogar && grounded && !estaARolar;
+        if (deveTocar == poeiraAtiva) return;
+
+        poeiraAtiva = deveTocar;
+        if (poeiraAtiva) poDosPassos.Play(); else poDosPassos.Stop();
+    }
+
+    private IEnumerator Rolar() {
         estaARolar = true;
         yield return new WaitForSeconds(tempoRolagem);
         estaARolar = false;
     }
 
-    void AtualizarPoeira()
-    {
-        if (PlayerPrefs.GetInt(PlayerPrefsKeys.Efeitos, 1) == 0)
-        {
-            poDosPassos.Stop();
-            return;
-        }
+    private IEnumerator AnimacaoEntrada() {
+        yield return new WaitForSeconds(tempoEsperaEntrada);
 
-        if (!estaVivo || pausa_iniciarJogo)
-        {
-            poDosPassos.Stop();
-            return;
-        }
-
-        if (IsGrounded() && !estaARolar)
-        {
-            if (!poDosPassos.isPlaying)
-            {
-                poDosPassos.Play();
-            }
-        }
-        else
-        {
-            if (poDosPassos.isPlaying)
-                poDosPassos.Stop();
-        }
+        animator.SetTrigger(StartRunHash);
+        jogoIniciado = true;
+        StartedRunning?.Invoke();
+        scoreManager.IniciarScore();
     }
-
 }
