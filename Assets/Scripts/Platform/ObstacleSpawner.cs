@@ -25,6 +25,7 @@ public class ObstacleSpawner : MonoBehaviour {
     [SerializeField] private GameObject obstaculoBloqueiaPrefab;
     [SerializeField] private GameObject obstaculoSaltarPrefab;
     [SerializeField] private GameObject obstaculoRolarPrefab;
+    [SerializeField] private GameObject livroPrefab;
 
     [SerializeField] private float laneWidth = 2.5f;
     [SerializeField] private float distanciaSpawn = 70f;
@@ -38,10 +39,15 @@ public class ObstacleSpawner : MonoBehaviour {
     [SerializeField] private float margemMudancaLane = 3f;
 
     [SerializeField] private float distanciaParaDestruir = 30f;
+    [SerializeField] private float chanceLivroPorLaneLivre = 0.6f;
+    [SerializeField] private int maxLanesComLivrosPorLinha = 3;
+    [SerializeField] private int livrosPorSequencia = 3;
+    [SerializeField] private float distanciaEntreLivros = 3f;
+    [SerializeField] private float livroY = 1f;
 
     private readonly List<EstadoPossivel> estadosPossiveis = new();
     private readonly List<EstadoPossivel> estadosTemporarios = new();
-    private readonly List<GameObject> obstaculosCriados = new();
+    private readonly List<GameObject> objetosCriados = new();
 
     private float proximoSpawnZ;
     private float ultimoSpawnZ;
@@ -63,6 +69,7 @@ public class ObstacleSpawner : MonoBehaviour {
         while (playerTransform.position.z + distanciaSpawn >= proximoSpawnZ) {
             TipoObstaculo[] linha = GerarLinhaValida(proximoSpawnZ);
             CriarLinha(linha, proximoSpawnZ);
+            CriarLivros(linha, proximoSpawnZ);
 
             ultimoSpawnZ = proximoSpawnZ;
             proximoSpawnZ += DistanciaEntreLinhas();
@@ -208,7 +215,36 @@ public class ObstacleSpawner : MonoBehaviour {
             Vector3 posicao = new Vector3(lane * laneWidth, spawnY, z);
 
             GameObject obstaculo = Instantiate(prefab, posicao, Quaternion.identity);
-            obstaculosCriados.Add(obstaculo);
+            objetosCriados.Add(obstaculo);
+        }
+    }
+
+    private void CriarLivros(TipoObstaculo[] linha, float z) {
+        if (livroPrefab == null) return;
+
+        int lanesComLivros = 0;
+
+        for (int i = 0; i < linha.Length; i++) {
+            if (lanesComLivros >= maxLanesComLivrosPorLinha) return;
+            if (linha[i] != TipoObstaculo.Nenhum) continue;
+            if (Random.value > chanceLivroPorLaneLivre) continue;
+
+            int lane = IndexParaLane(i);
+            CriarSequenciaLivros(lane, z);
+            lanesComLivros++;
+        }
+    }
+
+    private void CriarSequenciaLivros(int lane, float zInicial) {
+        for (int i = 0; i < livrosPorSequencia; i++) {
+            Vector3 posicao = new Vector3(
+                lane * laneWidth,
+                livroY,
+                zInicial + i * distanciaEntreLivros
+            );
+
+            GameObject livro = Instantiate(livroPrefab, posicao, Quaternion.identity);
+            objetosCriados.Add(livro);
         }
     }
 
@@ -245,15 +281,15 @@ public class ObstacleSpawner : MonoBehaviour {
     }
 
     private void LimparObstaculosAntigos() {
-        for (int i = obstaculosCriados.Count - 1; i >= 0; i--) {
-            if (obstaculosCriados[i] == null) {
-                obstaculosCriados.RemoveAt(i);
+        for (int i = objetosCriados.Count - 1; i >= 0; i--) {
+            if (objetosCriados[i] == null) {
+                objetosCriados.RemoveAt(i);
                 continue;
             }
 
-            if (obstaculosCriados[i].transform.position.z < playerTransform.position.z - distanciaParaDestruir) {
-                Destroy(obstaculosCriados[i]);
-                obstaculosCriados.RemoveAt(i);
+            if (objetosCriados[i].transform.position.z < playerTransform.position.z - distanciaParaDestruir) {
+                Destroy(objetosCriados[i]);
+                objetosCriados.RemoveAt(i);
             }
         }
     }
@@ -262,15 +298,15 @@ public class ObstacleSpawner : MonoBehaviour {
         proximoSpawnZ += deslocamentoZ;
         ultimoSpawnZ += deslocamentoZ;
 
-        for (int i = obstaculosCriados.Count - 1; i >= 0; i--) {
-            if (obstaculosCriados[i] == null) {
-                obstaculosCriados.RemoveAt(i);
+        for (int i = objetosCriados.Count - 1; i >= 0; i--) {
+            if (objetosCriados[i] == null) {
+                objetosCriados.RemoveAt(i);
                 continue;
             }
 
-            Vector3 posicao = obstaculosCriados[i].transform.position;
+            Vector3 posicao = objetosCriados[i].transform.position;
             posicao.z += deslocamentoZ;
-            obstaculosCriados[i].transform.position = posicao;
+            objetosCriados[i].transform.position = posicao;
         }
     }
 }

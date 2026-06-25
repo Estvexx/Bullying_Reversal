@@ -3,6 +3,7 @@ using UnityEngine;
 public class BookPickup : MonoBehaviour {
     [SerializeField] private BookManager bookManager;
     [SerializeField] private GameObject efeitoMoeda;
+    [SerializeField] private bool destruirLivroAoApanhar = true;
     [SerializeField] private float tempoReativarLivro = 10f;
 
     private void OnTriggerEnter(Collider other) {
@@ -15,7 +16,13 @@ public class BookPickup : MonoBehaviour {
                 Destroy(efeito, 1f);
             }
 
-            StartCoroutine(ReativarLivro(other.gameObject));
+            if (destruirLivroAoApanhar) {
+                other.gameObject.SetActive(false);
+                Destroy(other.gameObject);
+            }
+            else {
+                StartCoroutine(ReativarLivro(other.gameObject));
+            }
         }
     }
 

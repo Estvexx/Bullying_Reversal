@@ -2200,6 +2200,7 @@ MonoBehaviour:
   obstaculoBloqueiaPrefab: {fileID: 4692592081960445046, guid: 5d880cc2220151c49baf4d9e917c9dbb, type: 3}
   obstaculoSaltarPrefab: {fileID: 8972706958226023176, guid: 23d69c4e7318d1544b787e6d3a910e0c, type: 3}
   obstaculoRolarPrefab: {fileID: 6499301683212712023, guid: 1f698f75db6b01a4da0ce6cb22a118a7, type: 3}
+  livroPrefab: {fileID: 3453331796093500322, guid: 4c41c11cfccb4b04ba1e8988c7dcd883, type: 3}
   laneWidth: 2.5
   distanciaSpawn: 70
   distanciaInicial: 45
@@ -2210,6 +2211,10 @@ MonoBehaviour:
   tempoMinimoEntreAcoes: 0.85
   margemMudancaLane: 3
   distanciaParaDestruir: 30
+  chanceLivroPorLaneLivre: 0.6
+  livrosPorSequencia: 3
+  distanciaEntreLivros: 3
+  livroY: 1
 --- !u!4 &1239396419
 Transform:
   m_ObjectHideFlags: 0
