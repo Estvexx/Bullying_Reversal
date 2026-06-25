@@ -15,6 +15,8 @@ public class ScoreManager : MonoBehaviour
 
     public float intervaloMultiplier = 10f; // iontervalo para aumentar o multiplicador
     public int multiplierMaximo = 5;
+    [SerializeField] private Player player;
+    [SerializeField] private PlayerHealth playerHealth;
     [SerializeField] private float pontosPorSegundo = 10f;
     [SerializeField] private float tempoParaEsconderTexto = 3.3f;
     private int multiplier = 1;
@@ -24,6 +26,24 @@ public class ScoreManager : MonoBehaviour
     private int scoreFinal = 0;
 
     private bool jogoIniciado = false;
+
+    private void OnEnable()
+    {
+        if (player != null)
+            player.StartedRunning += IniciarScore;
+
+        if (playerHealth != null)
+            playerHealth.GameOverStarted += PararScore;
+    }
+
+    private void OnDisable()
+    {
+        if (player != null)
+            player.StartedRunning -= IniciarScore;
+
+        if (playerHealth != null)
+            playerHealth.GameOverStarted -= PararScore;
+    }
 
     public void IniciarScore()
     {
@@ -49,6 +69,8 @@ public class ScoreManager : MonoBehaviour
 
     public void PararScore()
     {
+        if (!jogoAtivo) return;
+
         scoreFinal = Mathf.FloorToInt(score);
         jogoAtivo = false;
 

@@ -34,7 +34,6 @@ public class Player : MonoBehaviour {
     [SerializeField] private float tempoEsperaEntrada = 5f;
     [SerializeField] private float tempoRolagem = 0.72f;
     [SerializeField] private float distanciaGroundCheck = 0.4f;
-    [SerializeField] private ScoreManager scoreManager;
 
     private Rigidbody rb;
     private Animator animator;
@@ -173,6 +172,5 @@ public class Player : MonoBehaviour {
         animator.SetTrigger(StartRunHash);
         jogoIniciado = true;
         StartedRunning?.Invoke();
-        scoreManager.IniciarScore();
     }
 }

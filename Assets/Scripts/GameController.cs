@@ -17,13 +17,23 @@ public class GameController : MonoBehaviour
     public TextMeshProUGUI booksFinalText;
 
     public PersonagemGameOver personagemGameOver;
+    [SerializeField] private PlayerHealth playerHealth;
 
-    void Start()
+    private void OnEnable()
     {
+        if (playerHealth != null)
+            playerHealth.DeathAnimationFinished += GameOverScreen;
     }
 
-     public void GameOverScreen()
+    private void OnDisable()
     {
+        if (playerHealth != null)
+            playerHealth.DeathAnimationFinished -= GameOverScreen;
+    }
+
+    public void GameOverScreen()
+    {
+        Time.timeScale = 0f;
         GameOver.SetActive(true);
         scoreFinalText.gameObject.SetActive(true);
         booksFinalText.gameObject.SetActive(true);
