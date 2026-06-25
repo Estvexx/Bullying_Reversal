@@ -15,6 +15,8 @@ public class ScoreManager : MonoBehaviour
 
     public float intervaloMultiplier = 10f; // iontervalo para aumentar o multiplicador
     public int multiplierMaximo = 5;
+    [SerializeField] private float pontosPorSegundo = 10f;
+    [SerializeField] private float tempoParaEsconderTexto = 3.3f;
     private int multiplier = 1;
     private float tempoDecorrido = 0f;
 
@@ -22,6 +24,18 @@ public class ScoreManager : MonoBehaviour
     private int scoreFinal = 0;
 
     private bool jogoIniciado = false;
+
+    private void OnEnable()
+    {
+        Player.RunStarted += IniciarScore;
+        PlayerHealth.AnyPlayerDied += PararScore;
+    }
+
+    private void OnDisable()
+    {
+        Player.RunStarted -= IniciarScore;
+        PlayerHealth.AnyPlayerDied -= PararScore;
+    }
 
     public void IniciarScore()
     {
@@ -40,21 +54,23 @@ public class ScoreManager : MonoBehaviour
             tempoDecorrido = 0f;
         }
 
-        score += multiplier * Time.deltaTime * 10; // 10 é só para a pontucao ser mais rapide
+        score += multiplier * Time.deltaTime * pontosPorSegundo;
         scoreText.text = (Mathf.FloorToInt(score)).ToString();
         multiplierText.text = multiplier.ToString();
     }
 
     public void PararScore()
     {
+        if (!jogoAtivo) return;
+
         scoreFinal = Mathf.FloorToInt(score);
         jogoAtivo = false;
 
-        PlayerPrefs.SetInt("UltimaPontuacao", scoreFinal);
+        PlayerPrefs.SetInt(PlayerPrefsKeys.UltimaPontuacao, scoreFinal);
 
-        if (scoreFinal > PlayerPrefs.GetInt("Recorde", 0))
+        if (scoreFinal > PlayerPrefs.GetInt(PlayerPrefsKeys.Recorde, 0))
         {
-            PlayerPrefs.SetInt("Recorde", scoreFinal);
+            PlayerPrefs.SetInt(PlayerPrefsKeys.Recorde, scoreFinal);
         }
 
         PlayerPrefs.Save();
@@ -64,7 +80,7 @@ public class ScoreManager : MonoBehaviour
 
     private System.Collections.IEnumerator EsconderTexto()
     {
-        yield return new WaitForSeconds(3.3f);
+        yield return new WaitForSeconds(tempoParaEsconderTexto);
         Background_Score.gameObject.SetActive(false);
         scoreText.gameObject.SetActive(false);
         Background_Multi.gameObject.SetActive(false);

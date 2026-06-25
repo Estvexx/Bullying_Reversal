@@ -1,22 +1,28 @@
 using UnityEngine;
+using System;
 
-public class PlayerHealth : MonoBehaviour
-{
-    public Animator anim;
+public class PlayerHealth : MonoBehaviour {
+    private static readonly int DieHash = Animator.StringToHash("die");
+
+    public event Action PlayerDied;
+    public event Action DeathAnimationFinished;
+    public static event Action AnyPlayerDied;
+    public static event Action AnyDeathAnimationFinished;
+
+    [SerializeField] private Animator anim;
+    [SerializeField] private Player player;
+    [SerializeField] private float tempoAnimacaoMorte = 3.5f;
+
     public int lives = 2;
 
-    private GameController gc;
-    private ScoreManager scoreManager;
+    private bool gameOverAtivo = false;
 
-    void Start()
-    {
-        // so tenho este objeto com o script game controller
-        gc = FindObjectOfType<GameController>();
-        scoreManager = FindObjectOfType<ScoreManager>();    
+    private void Awake() {
+        if (player == null)
+            player = GetComponent<Player>();
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
+    private void OnCollisionEnter(Collision collision) {
         if (!collision.gameObject.CompareTag("Obstacle")) return;
 
         // a seta do impacto
@@ -25,39 +31,35 @@ public class PlayerHealth : MonoBehaviour
         // quão de frente foi o impacto (0 = esquina, 1 = frente total)
         float dot = Mathf.Abs(Vector3.Dot(impactNormal, Vector3.forward));
 
-        if (dot >= 0.7f)
-        {
+        if (dot >= 0.7f) {
             // bateu mesmo de frente
             GameOver();
         }
-        else
-        {
+        else {
             // bateu de esquina
             lives--;
-            Debug.Log("Lives remaining: " + lives);
-            Debug.Log("Batida de esquina! Cuidado!");
 
-            if (lives <= 0)
-            {
+            if (lives <= 0) {
                 GameOver();
             }
         }
     }
 
-    private void GameOver()
-    {
-        GetComponent<Player>().Morrer();
-        FindFirstObjectByType<ScoreManager>().PararScore();
-        FindFirstObjectByType<BookManager>().PararContagem();
-        anim.SetTrigger("die");
+    private void GameOver() {
+        if (gameOverAtivo) return;
+
+        gameOverAtivo = true;
+        player.Morrer();
+        PlayerDied?.Invoke();
+        AnyPlayerDied?.Invoke();
+        anim.SetTrigger(DieHash);
 
         StartCoroutine(WaitAndPause());
     }
 
-    private System.Collections.IEnumerator WaitAndPause()
-    {
-        yield return new WaitForSeconds(3.5f); // tempo da animação
-        Time.timeScale = 0f;
-        gc.GameOverScreen();
+    private System.Collections.IEnumerator WaitAndPause() {
+        yield return new WaitForSeconds(tempoAnimacaoMorte);
+        DeathAnimationFinished?.Invoke();
+        AnyDeathAnimationFinished?.Invoke();
     }
 }

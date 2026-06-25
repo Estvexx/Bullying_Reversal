@@ -1,116 +1,149 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class InimigoController : MonoBehaviour
-{
-    private Player player;
-    private Animator animator;
+public class InimigoController : MonoBehaviour {
+    private static readonly int JumpHash = Animator.StringToHash("Jump");
+    private static readonly int RollHash = Animator.StringToHash("Roll");
+    private static readonly int StartRunHash = Animator.StringToHash("StartRun");
+    private static readonly int IsGroundedHash = Animator.StringToHash("isGrounded");
+    private static readonly int RirHash = Animator.StringToHash("rir");
+
+    [SerializeField] private Player player;
+    [SerializeField] private float intervalo = 0.075f;
 
     public float delay = 1f;
-    private float intervalo = 0.01f;
-    private float timer = 0f;
     public float zAproximacao = 2f;
     public float velocidadeAproximacao = 5f;
-    private bool aRir = false;
 
-    private Queue<Vector3> posicoes = new Queue<Vector3>();
-    private Queue<bool> filaGrounded = new Queue<bool>();
-    private Queue<string> filaTriggers = new Queue<string>();
+    private struct EstadoPlayer {
+        public Vector3 posicao;
+        public bool noChao;
 
-    private bool podeCorrer = false;
-
-    void Start()
-    {
-        player = FindFirstObjectByType<Player>();
-        animator = GetComponent<Animator>();
-        GetComponentInChildren<SkinnedMeshRenderer>().enabled = false;
+        public EstadoPlayer(Vector3 posicao, bool noChao) {
+            this.posicao = posicao;
+            this.noChao = noChao;
+        }
     }
 
-    void Update()
-    {
+    private readonly Queue<EstadoPlayer> estados = new Queue<EstadoPlayer>();
+    private Animator animator;
+    private Animator playerAnimator;
+    private SkinnedMeshRenderer meshRenderer;
+    private bool podeCorrer = false;
+    private bool aRir = false;
+    private float timer = 0f;
+
+    private void OnEnable() {
+        if (player == null) return;
+
+        player.Jumped += ReplicarJump;
+        player.Rolled += ReplicarRoll;
+        player.StartedRunning += ComecarCorrida;
+        player.Died += Rir;
+    }
+
+    private void OnDisable() {
+        if (player == null) return;
+
+        player.Jumped -= ReplicarJump;
+        player.Rolled -= ReplicarRoll;
+        player.StartedRunning -= ComecarCorrida;
+        player.Died -= Rir;
+    }
+
+    private void Start() {
+        animator = GetComponent<Animator>();
+        playerAnimator = player.GetComponent<Animator>();
+        meshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
+        meshRenderer.enabled = false;
+    }
+
+    private void FixedUpdate() {
         if (!podeCorrer) return;
 
-        if (aRir)
-        {
-            Vector3 destino = new Vector3(
-                transform.position.x,
-                transform.position.y,
-                player.transform.position.z - zAproximacao
-            );
-
-            transform.position = Vector3.MoveTowards(
-                transform.position,
-                destino,
-                velocidadeAproximacao * Time.deltaTime
-            );
+        if (aRir) {
+            AproximarDoPlayer();
             return;
         }
 
-
-        if (!player.estaVivo || !podeCorrer) return;
-
-        int posicoesNecessarias = Mathf.RoundToInt(delay / intervalo);
-
-        if (posicoes.Count >= posicoesNecessarias)
-        {
-            Vector3 alvo = posicoes.Dequeue();
-            transform.position = alvo;
-
-            if (filaGrounded.Count > 0)
-                animator.SetBool("isGrounded", filaGrounded.Dequeue());
-        }
-    }
-
-    void FixedUpdate()
-    {
-        if (!player.estaVivo || !podeCorrer) return;
+        if (!player.estaVivo) return;
 
         timer += Time.fixedDeltaTime;
-        if (timer >= intervalo)
-        {
-            posicoes.Enqueue(player.transform.position);
-            filaGrounded.Enqueue(player.GetComponent<Animator>().GetBool("isGrounded"));
-            timer = 0f;
-        }
+        if (timer < intervalo) return;
+
+        GuardarEstadoPlayer();
+        ReproduzirComDelay();
+        timer = 0f;
     }
 
-    public void IniciarPerseguicao()
-    {
-        GetComponentInChildren<SkinnedMeshRenderer>().enabled = true;
+    private void GuardarEstadoPlayer() {
+        estados.Enqueue(new EstadoPlayer(
+            player.transform.position,
+            playerAnimator.GetBool(IsGroundedHash)
+        ));
+    }
+
+    private void ReproduzirComDelay() {
+        int estadosNecessarios = Mathf.RoundToInt(delay / intervalo);
+        if (estados.Count <= estadosNecessarios) return;
+
+        EstadoPlayer estado = estados.Dequeue();
+        transform.position = estado.posicao;
+        animator.SetBool(IsGroundedHash, estado.noChao);
+    }
+
+    private void AproximarDoPlayer() {
+        Vector3 destino = new Vector3(
+            transform.position.x,
+            transform.position.y,
+            player.transform.position.z - zAproximacao
+        );
+
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            destino,
+            velocidadeAproximacao * Time.fixedDeltaTime
+        );
+    }
+
+    private void ComecarCorrida() {
+        meshRenderer.enabled = true;
         podeCorrer = true;
+        StartCoroutine(TriggerComDelay(StartRunHash));
     }
 
-    public void ReplicarJump()
-    {
-        StartCoroutine(TriggerComDelay("Jump"));
+    private void ReplicarJump() {
+        StartCoroutine(TriggerComDelay(JumpHash));
     }
 
-    public void ReplicarRoll()
-    {
-        StartCoroutine(TriggerComDelay("Roll"));
+    private void ReplicarRoll() {
+        StartCoroutine(TriggerComDelay(RollHash));
     }
 
-    public void ReplicarStartRun()
-    {
-        StartCoroutine(TriggerComDelay("StartRun"));
-    }
-
-    private System.Collections.IEnumerator TriggerComDelay(string trigger)
-    {
+    private System.Collections.IEnumerator TriggerComDelay(int triggerHash) {
         yield return new WaitForSeconds(delay);
-        animator.SetTrigger(trigger);
+        animator.SetTrigger(triggerHash);
     }
 
-    public void ExecutarRir()
-    {
+    private void Rir() {
         aRir = true;
-        posicoes.Clear();
-        filaGrounded.Clear();
-        Vector3 p = transform.position;
-        p.y = player.groundY;
-        transform.position = p;
-        animator.SetTrigger("rir");
+        estados.Clear();
+        transform.position = new Vector3(transform.position.x, player.groundY, transform.position.z);
+        animator.SetTrigger(RirHash);
+    }
 
+    public void AjustarOrigem(float deslocamentoZ) {
+        transform.position = new Vector3(
+            transform.position.x,
+            transform.position.y,
+            transform.position.z + deslocamentoZ
+        );
 
+        int quantidade = estados.Count;
+        for (int i = 0; i < quantidade; i++) {
+            EstadoPlayer estado = estados.Dequeue();
+            estado.posicao.z += deslocamentoZ;
+            estados.Enqueue(estado);
+        }
     }
 }

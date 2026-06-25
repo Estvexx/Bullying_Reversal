@@ -4,32 +4,42 @@ public class SomManager : MonoBehaviour
 {
     public static SomManager Instance;
 
-    public AudioClip somSalto;
-    public AudioClip somRoll;
-    public AudioClip somBook;
-    public AudioClip musicaAmbiente;
+    [SerializeField] private AudioClip somSalto;
+    [SerializeField] private AudioClip somRoll;
+    [SerializeField] private AudioClip somBook;
+    [SerializeField] private AudioClip musicaAmbiente;
 
-    public AudioSource audioSource;
-
-    public AudioSource audioSourceMusica;
-    public AudioSource audioSourceEfeitos;
+    [SerializeField] private AudioSource audioSourceMusica;
+    [SerializeField] private AudioSource audioSourceEfeitos;
 
     void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
-        AudioSource[] sources = GetComponents<AudioSource>();
-        audioSourceMusica = sources[0];
-        audioSourceEfeitos = sources[1];
+        DontDestroyOnLoad(gameObject);
     }
 
     void Start()
     {
-        audioSourceMusica.volume = PlayerPrefs.GetFloat("VolumeMusica", 1f);
-        audioSourceEfeitos.volume = PlayerPrefs.GetFloat("VolumeSons", 1f);
+        AplicarVolumes(
+            PlayerPrefs.GetFloat(PlayerPrefsKeys.VolumeMusica, 1f),
+            PlayerPrefs.GetFloat(PlayerPrefsKeys.VolumeSons, 1f)
+        );
 
         audioSourceMusica.clip = musicaAmbiente;
         audioSourceMusica.loop = true;
         audioSourceMusica.Play();
+    }
+
+    public void AplicarVolumes(float volumeMusica, float volumeEfeitos)
+    {
+        audioSourceMusica.volume = volumeMusica;
+        audioSourceEfeitos.volume = volumeEfeitos;
     }
 
     public void TocarSalto() => audioSourceEfeitos.PlayOneShot(somSalto);

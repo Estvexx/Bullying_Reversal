@@ -3,8 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 
-public class GameController : MonoBehaviour
-{
+public class GameController : MonoBehaviour {
     public GameObject GameOver;
     public GameObject Button_Play;
     public GameObject Button_Back_to_Menu;
@@ -15,15 +14,21 @@ public class GameController : MonoBehaviour
     public TextMeshProUGUI scoreFinalText;
     public GameObject Background_Current_Books;
     public TextMeshProUGUI booksFinalText;
+    public GameObject Background_Recorde;
+    public TextMeshProUGUI recordeFinalText;
 
     public PersonagemGameOver personagemGameOver;
 
-    void Start()
-    {
+    private void OnEnable() {
+        PlayerHealth.AnyDeathAnimationFinished += GameOverScreen;
     }
 
-     public void GameOverScreen()
-    {
+    private void OnDisable() {
+        PlayerHealth.AnyDeathAnimationFinished -= GameOverScreen;
+    }
+
+    public void GameOverScreen() {
+        Time.timeScale = 0f;
         GameOver.SetActive(true);
         scoreFinalText.gameObject.SetActive(true);
         booksFinalText.gameObject.SetActive(true);
@@ -34,22 +39,28 @@ public class GameController : MonoBehaviour
         RawImage.SetActive(true);
         Background_Current_Score.SetActive(true);
         Background_Current_Books.SetActive(true);
+        if (Background_Recorde != null)
+            Background_Recorde.SetActive(true);
 
-        scoreFinalText.text = "" + PlayerPrefs.GetInt("UltimaPontuacao", 0);
-        booksFinalText.text = "" + PlayerPrefs.GetInt("UltimaBooks", 0);
+        scoreFinalText.text = "" + PlayerPrefs.GetInt(PlayerPrefsKeys.UltimaPontuacao, 0);
+        booksFinalText.text = "" + PlayerPrefs.GetInt(PlayerPrefsKeys.UltimaBooks, 0);
+
+        if (recordeFinalText != null) {
+            recordeFinalText.gameObject.SetActive(true);
+            recordeFinalText.text = "" + PlayerPrefs.GetInt(PlayerPrefsKeys.Recorde, 0);
+        }
+
 
         personagemGameOver.TocarDanca();
-        
+
     }
 
-    public void RestartGame()
-    {
+    public void RestartGame() {
         Time.timeScale = 1f;
         SceneManager.LoadScene("Jogo");
     }
 
-    public void BackToMenu()
-    {
+    public void BackToMenu() {
         Time.timeScale = 1f;
         SceneManager.LoadScene("MenuPrincipal");
     }

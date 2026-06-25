@@ -1,32 +1,33 @@
 using UnityEngine;
 
-public class PlatformTrigger : MonoBehaviour
-{
-    private SpawnPlatform Spawn;
-    void Start()
-    {
-        Spawn = FindFirstObjectByType<SpawnPlatform>();
+public class PlatformTrigger : MonoBehaviour {
+    [SerializeField] private SpawnPlatform spawn;
+    [SerializeField] private Transform platformRoot;
+    [SerializeField] private float tempoAntesDeReciclar = 1f;
+
+    private bool aReciclar;
+
+    public void DefinirSpawn(SpawnPlatform novoSpawn, Transform novaPlatformRoot) {
+        spawn = novoSpawn;
+        platformRoot = novaPlatformRoot;
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            if (SpawnPlatform.obstaculoPrincipal != null)
-            {
-                Destroy(SpawnPlatform.obstaculoPrincipal.gameObject);
-                Debug.Log("Obstáculo Principal destruído");
+    private void OnTriggerEnter(Collider other) {
+        if (aReciclar) return;
 
-                SpawnPlatform.obstaculo_para_Ativar.SetActive(true);
-                Debug.Log("Obstáculo para Ativar ativado");
-            }
-            StartCoroutine(RecycleDelay(transform.parent.gameObject));
-        }
+        Player player = other.GetComponentInParent<Player>();
+        if (player == null) return;
+
+        aReciclar = true;
+        StartCoroutine(RecycleDelay());
     }
 
-    private System.Collections.IEnumerator RecycleDelay(GameObject platform)
-    {
-        yield return new WaitForSeconds(1f);
-        Spawn.Recycle(platform);
+    private System.Collections.IEnumerator RecycleDelay() {
+        yield return new WaitForSeconds(tempoAntesDeReciclar);
+
+        if (spawn != null && platformRoot != null)
+            spawn.Recycle(platformRoot.gameObject);
+
+        aReciclar = false;
     }
 }

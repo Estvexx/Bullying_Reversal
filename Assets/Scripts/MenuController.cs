@@ -4,14 +4,15 @@ using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
 {
-    public TextMeshProUGUI ultimaPontuacaoText;
-    public TextMeshProUGUI recordeText;
-    public TextMeshProUGUI booksText;
+    [SerializeField] private TextMeshProUGUI ultimaPontuacaoText;
+    [SerializeField] private TextMeshProUGUI recordeText;
+    [SerializeField] private TextMeshProUGUI booksText;
+
     void Start()
     {
-        ultimaPontuacaoText.text = "" + PlayerPrefs.GetInt("UltimaPontuacao", 0);
-        recordeText.text = "" + PlayerPrefs.GetInt("Recorde", 0);
-        booksText.text = "" + PlayerPrefs.GetInt("Books", 0);
+        ultimaPontuacaoText.text = "" + PlayerPrefs.GetInt(PlayerPrefsKeys.UltimaPontuacao, 0);
+        recordeText.text = "" + PlayerPrefs.GetInt(PlayerPrefsKeys.Recorde, 0);
+        booksText.text = "" + PlayerPrefs.GetInt(PlayerPrefsKeys.TotalBooks, 0);
     }
 
     public void Jogar()

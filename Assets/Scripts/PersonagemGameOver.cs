@@ -2,6 +2,10 @@ using UnityEngine;
 
 public class PersonagemGameOver : MonoBehaviour
 {
+    private static readonly int Dance1Hash = Animator.StringToHash("dance1");
+    private static readonly int Dance2Hash = Animator.StringToHash("dance2");
+    private static readonly int Dance3Hash = Animator.StringToHash("dance3");
+
     private Animator animator;
 
     void Start()
@@ -11,22 +15,20 @@ public class PersonagemGameOver : MonoBehaviour
     }
 
     public void TocarDanca()
-{
-    int ultimoScore = PlayerPrefs.GetInt("UltimaPontuacao", 0);
-    Debug.Log("Score: " + ultimoScore);
-    Debug.Log("Animator ativo: " + animator.enabled);
-    Debug.Log("GameObject ativo: " + gameObject.activeSelf);
-    Debug.Log("Estado atual: " + animator.GetCurrentAnimatorClipInfo(0)[0].clip.name);
-
-    if (ultimoScore <= 1000)
     {
-        Debug.Log("A disparar dance1");
-        animator.Play("dance1");
-        //animator.SetTrigger("dance1");
+        int ultimoScore = PlayerPrefs.GetInt(PlayerPrefsKeys.UltimaPontuacao, 0);
+
+        if (ultimoScore <= 1000)
+        {
+            animator.Play(Dance1Hash);
+        }
+        else if (ultimoScore > 1000 && ultimoScore <= 2000)
+        {
+            animator.Play(Dance2Hash);
+        }
+        else
+        {
+            animator.Play(Dance3Hash);
+        }
     }
-    else if (ultimoScore > 1000 && ultimoScore <= 2000)
-        animator.Play("dance2");
-    else
-        animator.Play("dance3");
-}
 }
