@@ -2,6 +2,11 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    private static readonly int JumpHash = Animator.StringToHash("Jump");
+    private static readonly int RollHash = Animator.StringToHash("Roll");
+    private static readonly int StartRunHash = Animator.StringToHash("StartRun");
+    private static readonly int IsGroundedHash = Animator.StringToHash("isGrounded");
+
     private Rigidbody rb;
     private Animator animator;
     public Transform groundCheck; // objeto nos pés do meco
@@ -31,9 +36,12 @@ public class Player : MonoBehaviour
     public bool estaVivo = true;
     private bool pausa_iniciarJogo = true;
     private bool estaARolar = false;
-    public float tempoAnimacaoEntrada = 20f;
 
-    private InimigoController inimigo;
+    [SerializeField] private float tempoEsperaEntrada = 5f;
+    [SerializeField] private float tempoRolagem = 0.72f;
+    [SerializeField] private float distanciaGroundCheck = 0.4f;
+    [SerializeField] private InimigoController inimigo;
+    [SerializeField] private ScoreManager scoreManager;
 
     void Start()
     {
@@ -46,7 +54,6 @@ public class Player : MonoBehaviour
         velocidadeAtual = velocidadeBase;
 
         StartCoroutine(AnimacaoEntrada());
-        inimigo = FindFirstObjectByType<InimigoController>();
 
     }
 
@@ -70,7 +77,7 @@ public class Player : MonoBehaviour
                 estaARolar = false;
             }
             jumpVelocity = jumpHeight;
-            animator.SetTrigger("Jump");
+            animator.SetTrigger(JumpHash);
             inimigo.ReplicarJump();
             SomManager.Instance.TocarSalto();
         }
@@ -78,12 +85,12 @@ public class Player : MonoBehaviour
         if ((Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.LeftShift)) && !estaARolar)
         {
             rollCoroutine = StartCoroutine(Rolar());
-            animator.SetTrigger("Roll");
+            animator.SetTrigger(RollHash);
             SomManager.Instance.TocarRoll();
             inimigo.ReplicarRoll();
         }
 
-        animator.SetBool("isGrounded", IsGrounded());
+        animator.SetBool(IsGroundedHash, IsGrounded());
 
     }
 
@@ -127,7 +134,7 @@ public class Player : MonoBehaviour
 
     bool IsGrounded()
     {
-        return Physics.Raycast(groundCheck.position, Vector3.down, 0.4f);
+        return Physics.Raycast(groundCheck.position, Vector3.down, distanciaGroundCheck);
     }
     public void Morrer()
     {
@@ -146,25 +153,25 @@ public class Player : MonoBehaviour
 
     private System.Collections.IEnumerator AnimacaoEntrada()
     {
-        yield return new WaitForSeconds(5);
-        animator.SetTrigger("StartRun");
+        yield return new WaitForSeconds(tempoEsperaEntrada);
+        animator.SetTrigger(StartRunHash);
         inimigo.ReplicarStartRun();
         pausa_iniciarJogo = false;
         inimigo.IniciarPerseguicao();
 
-        FindObjectOfType<ScoreManager>().IniciarScore();
+        scoreManager.IniciarScore();
     }
 
     private System.Collections.IEnumerator Rolar()
     {
         estaARolar = true;
-        yield return new WaitForSeconds(0.72f);
+        yield return new WaitForSeconds(tempoRolagem);
         estaARolar = false;
     }
 
     void AtualizarPoeira()
     {
-        if (PlayerPrefs.GetInt("Efeitos", 1) == 0)
+        if (PlayerPrefs.GetInt(PlayerPrefsKeys.Efeitos, 1) == 0)
         {
             poDosPassos.Stop();
             return;
@@ -180,7 +187,6 @@ public class Player : MonoBehaviour
         {
             if (!poDosPassos.isPlaying)
             {
-                Debug.Log("A iniciar poeira!");
                 poDosPassos.Play();
             }
         }
@@ -191,19 +197,4 @@ public class Player : MonoBehaviour
         }
     }
 
-    void JumpDebug()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Debug.Log("Space key pressed");
-            if (IsGrounded())
-            {
-                Debug.Log("Player is grounded");
-            }
-            else
-            {
-                Debug.Log("Player is in the air");
-            }
-        }
-    }
 }

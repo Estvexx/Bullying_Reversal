@@ -3,39 +3,39 @@ using TMPro;
 
 public class BookManager : MonoBehaviour
 {
-    public TextMeshProUGUI booksText;
+    [SerializeField] private TextMeshProUGUI booksText;
+    [SerializeField] private float tempoParaEsconderTexto = 3.3f;
+
     private int livros = 0;
     private int Books_Coletados = 0;
     private int QntAtualBooks;
     private bool contagemParada = false;
 
+    public void AdicionarLivro()
+    {
+        livros++;
+        booksText.text = "" + livros;
+    }
 
-    
-public void AdicionarLivro()
-{
-    livros++;
-    booksText.text = "" + livros;
-    Debug.Log("AdicionarLivro chamado! Stack: " + System.Environment.StackTrace);
-}
     public void PararContagem()
     {
-        
-        if(contagemParada == false){
-        Books_Coletados = Mathf.FloorToInt(livros);
-        PlayerPrefs.SetInt("UltimaBooks", Books_Coletados);
-        QntAtualBooks = PlayerPrefs.GetInt("Books", 0);
-        QntAtualBooks += Books_Coletados;
-        PlayerPrefs.SetInt("Books", QntAtualBooks);        
-        
-        PlayerPrefs.Save();
-        StartCoroutine(EsconderTexto());
-        contagemParada = true;
+        if (!contagemParada)
+        {
+            Books_Coletados = Mathf.FloorToInt(livros);
+            PlayerPrefs.SetInt(PlayerPrefsKeys.UltimaBooks, Books_Coletados);
+            QntAtualBooks = PlayerPrefs.GetInt(PlayerPrefsKeys.TotalBooks, 0);
+            QntAtualBooks += Books_Coletados;
+            PlayerPrefs.SetInt(PlayerPrefsKeys.TotalBooks, QntAtualBooks);
+
+            PlayerPrefs.Save();
+            StartCoroutine(EsconderTexto());
+            contagemParada = true;
         }
     }
 
     private System.Collections.IEnumerator EsconderTexto()
     {
-        yield return new WaitForSeconds(3.3f);
+        yield return new WaitForSeconds(tempoParaEsconderTexto);
         booksText.gameObject.SetActive(false);
     }
 }

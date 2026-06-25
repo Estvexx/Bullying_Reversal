@@ -24,6 +24,7 @@ public class SpawnPlatform : MonoBehaviour
 
             Transform platform = Instantiate(prefab, new Vector3(0, 0, i * 100), prefab.transform.rotation).transform;
             currentPlatforms.Add(platform);
+            ConfigurarTriggers(platform);
 
             if (i == 0)
             {
@@ -52,5 +53,15 @@ public class SpawnPlatform : MonoBehaviour
     {
         platform.transform.position = new Vector3(0, 0, offset);
         offset += 100;
+    }
+
+    private void ConfigurarTriggers(Transform platform)
+    {
+        PlatformTrigger[] triggers = platform.GetComponentsInChildren<PlatformTrigger>(true);
+
+        foreach (PlatformTrigger trigger in triggers)
+        {
+            trigger.DefinirSpawn(this);
+        }
     }
 }

@@ -2,18 +2,15 @@ using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public Animator anim;
+    private static readonly int DieHash = Animator.StringToHash("die");
+
+    [SerializeField] private Animator anim;
+    [SerializeField] private GameController gc;
+    [SerializeField] private ScoreManager scoreManager;
+    [SerializeField] private BookManager bookManager;
+    [SerializeField] private float tempoAnimacaoMorte = 3.5f;
+
     public int lives = 2;
-
-    private GameController gc;
-    private ScoreManager scoreManager;
-
-    void Start()
-    {
-        // so tenho este objeto com o script game controller
-        gc = FindObjectOfType<GameController>();
-        scoreManager = FindObjectOfType<ScoreManager>();    
-    }
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -34,8 +31,6 @@ public class PlayerHealth : MonoBehaviour
         {
             // bateu de esquina
             lives--;
-            Debug.Log("Lives remaining: " + lives);
-            Debug.Log("Batida de esquina! Cuidado!");
 
             if (lives <= 0)
             {
@@ -47,16 +42,16 @@ public class PlayerHealth : MonoBehaviour
     private void GameOver()
     {
         GetComponent<Player>().Morrer();
-        FindFirstObjectByType<ScoreManager>().PararScore();
-        FindFirstObjectByType<BookManager>().PararContagem();
-        anim.SetTrigger("die");
+        scoreManager.PararScore();
+        bookManager.PararContagem();
+        anim.SetTrigger(DieHash);
 
         StartCoroutine(WaitAndPause());
     }
 
     private System.Collections.IEnumerator WaitAndPause()
     {
-        yield return new WaitForSeconds(3.5f); // tempo da animação
+        yield return new WaitForSeconds(tempoAnimacaoMorte);
         Time.timeScale = 0f;
         gc.GameOverScreen();
     }

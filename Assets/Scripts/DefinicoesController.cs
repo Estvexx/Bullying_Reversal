@@ -10,9 +10,9 @@ public class DefinicoesController : MonoBehaviour
 
     void Start()
     {
-        sliderMusica.value = PlayerPrefs.GetFloat("VolumeMusica", 1f);
-        sliderSons.value = PlayerPrefs.GetFloat("VolumeSons", 1f);
-        toggleEfeitos.isOn = PlayerPrefs.GetInt("Efeitos", 1) == 1;
+        sliderMusica.value = PlayerPrefs.GetFloat(PlayerPrefsKeys.VolumeMusica, 1f);
+        sliderSons.value = PlayerPrefs.GetFloat(PlayerPrefsKeys.VolumeSons, 1f);
+        toggleEfeitos.isOn = PlayerPrefs.GetInt(PlayerPrefsKeys.Efeitos, 1) == 1;
 
 
         AplicarVolumes();
@@ -20,29 +20,28 @@ public class DefinicoesController : MonoBehaviour
 
     public void OnMusicaChanged()
     {
-        PlayerPrefs.SetFloat("VolumeMusica", sliderMusica.value);
+        PlayerPrefs.SetFloat(PlayerPrefsKeys.VolumeMusica, sliderMusica.value);
         PlayerPrefs.Save();
         AplicarVolumes();
     }
 
     public void OnSonsChanged()
     {
-        PlayerPrefs.SetFloat("VolumeSons", sliderSons.value);
+        PlayerPrefs.SetFloat(PlayerPrefsKeys.VolumeSons, sliderSons.value);
         PlayerPrefs.Save();
         AplicarVolumes();
     }
 
     public void OnEfeitosChanged()
     {
-        PlayerPrefs.SetInt("Efeitos", toggleEfeitos.isOn ? 1 : 0);
+        PlayerPrefs.SetInt(PlayerPrefsKeys.Efeitos, toggleEfeitos.isOn ? 1 : 0);
         PlayerPrefs.Save();
     }
     void AplicarVolumes()
     {
         if (SomManager.Instance != null)
         {
-            SomManager.Instance.audioSourceMusica.volume = sliderMusica.value;
-            SomManager.Instance.audioSourceEfeitos.volume = sliderSons.value;
+            SomManager.Instance.AplicarVolumes(sliderMusica.value, sliderSons.value);
         }
     }
 

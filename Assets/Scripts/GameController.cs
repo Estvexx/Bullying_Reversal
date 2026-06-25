@@ -35,8 +35,8 @@ public class GameController : MonoBehaviour
         Background_Current_Score.SetActive(true);
         Background_Current_Books.SetActive(true);
 
-        scoreFinalText.text = "" + PlayerPrefs.GetInt("UltimaPontuacao", 0);
-        booksFinalText.text = "" + PlayerPrefs.GetInt("UltimaBooks", 0);
+        scoreFinalText.text = "" + PlayerPrefs.GetInt(PlayerPrefsKeys.UltimaPontuacao, 0);
+        booksFinalText.text = "" + PlayerPrefs.GetInt(PlayerPrefsKeys.UltimaBooks, 0);
 
         personagemGameOver.TocarDanca();
         

@@ -3,11 +3,18 @@ using System.Collections.Generic;
 
 public class InimigoController : MonoBehaviour
 {
-    private Player player;
+    private static readonly int JumpHash = Animator.StringToHash("Jump");
+    private static readonly int RollHash = Animator.StringToHash("Roll");
+    private static readonly int StartRunHash = Animator.StringToHash("StartRun");
+    private static readonly int IsGroundedHash = Animator.StringToHash("isGrounded");
+    private static readonly int RirHash = Animator.StringToHash("rir");
+
+    [SerializeField] private Player player;
     private Animator animator;
+    private Animator playerAnimator;
 
     public float delay = 1f;
-    private float intervalo = 0.01f;
+    [SerializeField] private float intervalo = 0.01f;
     private float timer = 0f;
     public float zAproximacao = 2f;
     public float velocidadeAproximacao = 5f;
@@ -15,14 +22,13 @@ public class InimigoController : MonoBehaviour
 
     private Queue<Vector3> posicoes = new Queue<Vector3>();
     private Queue<bool> filaGrounded = new Queue<bool>();
-    private Queue<string> filaTriggers = new Queue<string>();
 
     private bool podeCorrer = false;
 
     void Start()
     {
-        player = FindFirstObjectByType<Player>();
         animator = GetComponent<Animator>();
+        playerAnimator = player.GetComponent<Animator>();
         GetComponentInChildren<SkinnedMeshRenderer>().enabled = false;
     }
 
@@ -57,7 +63,7 @@ public class InimigoController : MonoBehaviour
             transform.position = alvo;
 
             if (filaGrounded.Count > 0)
-                animator.SetBool("isGrounded", filaGrounded.Dequeue());
+                animator.SetBool(IsGroundedHash, filaGrounded.Dequeue());
         }
     }
 
@@ -69,7 +75,7 @@ public class InimigoController : MonoBehaviour
         if (timer >= intervalo)
         {
             posicoes.Enqueue(player.transform.position);
-            filaGrounded.Enqueue(player.GetComponent<Animator>().GetBool("isGrounded"));
+            filaGrounded.Enqueue(playerAnimator.GetBool(IsGroundedHash));
             timer = 0f;
         }
     }
@@ -82,23 +88,23 @@ public class InimigoController : MonoBehaviour
 
     public void ReplicarJump()
     {
-        StartCoroutine(TriggerComDelay("Jump"));
+        StartCoroutine(TriggerComDelay(JumpHash));
     }
 
     public void ReplicarRoll()
     {
-        StartCoroutine(TriggerComDelay("Roll"));
+        StartCoroutine(TriggerComDelay(RollHash));
     }
 
     public void ReplicarStartRun()
     {
-        StartCoroutine(TriggerComDelay("StartRun"));
+        StartCoroutine(TriggerComDelay(StartRunHash));
     }
 
-    private System.Collections.IEnumerator TriggerComDelay(string trigger)
+    private System.Collections.IEnumerator TriggerComDelay(int triggerHash)
     {
         yield return new WaitForSeconds(delay);
-        animator.SetTrigger(trigger);
+        animator.SetTrigger(triggerHash);
     }
 
     public void ExecutarRir()
@@ -109,7 +115,7 @@ public class InimigoController : MonoBehaviour
         Vector3 p = transform.position;
         p.y = player.groundY;
         transform.position = p;
-        animator.SetTrigger("rir");
+        animator.SetTrigger(RirHash);
 
 
     }
