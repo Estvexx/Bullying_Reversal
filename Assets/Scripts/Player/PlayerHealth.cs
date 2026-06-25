@@ -6,6 +6,8 @@ public class PlayerHealth : MonoBehaviour {
 
     public event Action PlayerDied;
     public event Action DeathAnimationFinished;
+    public static event Action AnyPlayerDied;
+    public static event Action AnyDeathAnimationFinished;
 
     [SerializeField] private Animator anim;
     [SerializeField] private Player player;
@@ -49,6 +51,7 @@ public class PlayerHealth : MonoBehaviour {
         gameOverAtivo = true;
         player.Morrer();
         PlayerDied?.Invoke();
+        AnyPlayerDied?.Invoke();
         anim.SetTrigger(DieHash);
 
         StartCoroutine(WaitAndPause());
@@ -57,5 +60,6 @@ public class PlayerHealth : MonoBehaviour {
     private System.Collections.IEnumerator WaitAndPause() {
         yield return new WaitForSeconds(tempoAnimacaoMorte);
         DeathAnimationFinished?.Invoke();
+        AnyDeathAnimationFinished?.Invoke();
     }
 }

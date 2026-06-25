@@ -17,18 +17,15 @@ public class GameController : MonoBehaviour
     public TextMeshProUGUI booksFinalText;
 
     public PersonagemGameOver personagemGameOver;
-    [SerializeField] private PlayerHealth playerHealth;
 
     private void OnEnable()
     {
-        if (playerHealth != null)
-            playerHealth.DeathAnimationFinished += GameOverScreen;
+        PlayerHealth.AnyDeathAnimationFinished += GameOverScreen;
     }
 
     private void OnDisable()
     {
-        if (playerHealth != null)
-            playerHealth.DeathAnimationFinished -= GameOverScreen;
+        PlayerHealth.AnyDeathAnimationFinished -= GameOverScreen;
     }
 
     public void GameOverScreen()

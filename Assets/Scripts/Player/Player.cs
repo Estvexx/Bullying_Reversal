@@ -12,6 +12,7 @@ public class Player : MonoBehaviour {
     public event Action Rolled;
     public event Action StartedRunning;
     public event Action Died;
+    public static event Action RunStarted;
 
     public Transform groundCheck;
     public ParticleSystem poDosPassos;
@@ -131,6 +132,12 @@ public class Player : MonoBehaviour {
         Died?.Invoke();
     }
 
+    public void AjustarOrigem(float deslocamentoZ) {
+        Vector3 pos = rb.position;
+        pos.z += deslocamentoZ;
+        rb.position = pos;
+    }
+
     private void Saltar() {
         if (estaARolar) {
             StopCoroutine(rollCoroutine);
@@ -172,5 +179,6 @@ public class Player : MonoBehaviour {
         animator.SetTrigger(StartRunHash);
         jogoIniciado = true;
         StartedRunning?.Invoke();
+        RunStarted?.Invoke();
     }
 }

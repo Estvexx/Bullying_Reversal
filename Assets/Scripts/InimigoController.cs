@@ -131,4 +131,19 @@ public class InimigoController : MonoBehaviour {
         transform.position = new Vector3(transform.position.x, player.groundY, transform.position.z);
         animator.SetTrigger(RirHash);
     }
+
+    public void AjustarOrigem(float deslocamentoZ) {
+        transform.position = new Vector3(
+            transform.position.x,
+            transform.position.y,
+            transform.position.z + deslocamentoZ
+        );
+
+        int quantidade = estados.Count;
+        for (int i = 0; i < quantidade; i++) {
+            EstadoPlayer estado = estados.Dequeue();
+            estado.posicao.z += deslocamentoZ;
+            estados.Enqueue(estado);
+        }
+    }
 }

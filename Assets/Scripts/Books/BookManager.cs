@@ -3,7 +3,6 @@ using TMPro;
 
 public class BookManager : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI booksText;
-    [SerializeField] private PlayerHealth playerHealth;
     [SerializeField] private float tempoParaEsconderTexto = 3.3f;
 
     private int livros = 0;
@@ -12,13 +11,11 @@ public class BookManager : MonoBehaviour {
     private bool contagemParada = false;
 
     private void OnEnable() {
-        if (playerHealth != null)
-            playerHealth.PlayerDied += PararContagem;
+        PlayerHealth.AnyPlayerDied += PararContagem;
     }
 
     private void OnDisable() {
-        if (playerHealth != null)
-            playerHealth.PlayerDied -= PararContagem;
+        PlayerHealth.AnyPlayerDied -= PararContagem;
     }
 
     public void AdicionarLivro() {

@@ -13,7 +13,7 @@ public class SpawnPlatform : MonoBehaviour
     public List<Transform> currentObstacles = new List<Transform>();
 
 
-    public int offset;
+    public float offset;
 
     void Start()
     {
@@ -53,6 +53,20 @@ public class SpawnPlatform : MonoBehaviour
     {
         platform.transform.position = new Vector3(0, 0, offset);
         offset += 100;
+    }
+
+    public void AjustarOrigem(float deslocamentoZ)
+    {
+        offset += deslocamentoZ;
+
+        foreach (Transform platform in currentPlatforms)
+        {
+            if (platform == null) continue;
+
+            Vector3 pos = platform.position;
+            pos.z += deslocamentoZ;
+            platform.position = pos;
+        }
     }
 
     private void ConfigurarTriggers(Transform platform)
