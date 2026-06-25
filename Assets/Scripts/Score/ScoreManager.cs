@@ -33,7 +33,7 @@ public class ScoreManager : MonoBehaviour
             player.StartedRunning += IniciarScore;
 
         if (playerHealth != null)
-            playerHealth.GameOverStarted += PararScore;
+            playerHealth.PlayerDied += PararScore;
     }
 
     private void OnDisable()
@@ -42,7 +42,7 @@ public class ScoreManager : MonoBehaviour
             player.StartedRunning -= IniciarScore;
 
         if (playerHealth != null)
-            playerHealth.GameOverStarted -= PararScore;
+            playerHealth.PlayerDied -= PararScore;
     }
 
     public void IniciarScore()

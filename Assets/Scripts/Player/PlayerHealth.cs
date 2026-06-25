@@ -44,6 +44,8 @@ public class PlayerHealth : MonoBehaviour {
     }
 
     private void GameOver() {
+        if (gameOverAtivo) return;
+
         gameOverAtivo = true;
         player.Morrer();
         PlayerDied?.Invoke();
