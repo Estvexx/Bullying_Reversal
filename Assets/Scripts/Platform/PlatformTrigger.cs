@@ -1,32 +1,33 @@
 using UnityEngine;
 
-public class PlatformTrigger : MonoBehaviour
-{
+public class PlatformTrigger : MonoBehaviour {
     [SerializeField] private SpawnPlatform spawn;
+    [SerializeField] private Transform platformRoot;
     [SerializeField] private float tempoAntesDeReciclar = 1f;
 
-    public void DefinirSpawn(SpawnPlatform novoSpawn)
-    {
+    private bool aReciclar;
+
+    public void DefinirSpawn(SpawnPlatform novoSpawn, Transform novaPlatformRoot) {
         spawn = novoSpawn;
+        platformRoot = novaPlatformRoot;
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            if (SpawnPlatform.obstaculoPrincipal != null)
-            {
-                Destroy(SpawnPlatform.obstaculoPrincipal.gameObject);
-                SpawnPlatform.obstaculo_para_Ativar.SetActive(true);
-            }
+    private void OnTriggerEnter(Collider other) {
+        if (aReciclar) return;
 
-            StartCoroutine(RecycleDelay(transform.parent.gameObject));
-        }
+        Player player = other.GetComponentInParent<Player>();
+        if (player == null) return;
+
+        aReciclar = true;
+        StartCoroutine(RecycleDelay());
     }
 
-    private System.Collections.IEnumerator RecycleDelay(GameObject platform)
-    {
+    private System.Collections.IEnumerator RecycleDelay() {
         yield return new WaitForSeconds(tempoAntesDeReciclar);
-        spawn.Recycle(platform);
+
+        if (spawn != null && platformRoot != null)
+            spawn.Recycle(platformRoot.gameObject);
+
+        aReciclar = false;
     }
 }

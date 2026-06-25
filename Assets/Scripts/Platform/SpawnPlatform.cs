@@ -3,56 +3,34 @@ using System.Collections.Generic;
 
 public class SpawnPlatform : MonoBehaviour
 {
-    public static Transform obstaculoPrincipal;
-    public static GameObject obstaculo_para_Ativar;
     public List<GameObject> platformPrefabs = new List<GameObject>();
     public List<Transform> currentPlatforms = new List<Transform>();
 
-    public List<GameObject> obstacles = new List<GameObject>();
-
-    public List<Transform> currentObstacles = new List<Transform>();
-
+    [SerializeField] private float distanciaEntrePlataformas = 100f;
 
     public float offset;
 
-    void Start()
+    private void Start()
     {
+        currentPlatforms.Clear();
+        offset = 0f;
+
         for (int i = 0; i < platformPrefabs.Count; i++)
         {
             GameObject prefab = platformPrefabs[i];
-            GameObject obstaclePrefab = obstacles[i];
+            Vector3 posicao = new Vector3(0, 0, i * distanciaEntrePlataformas);
+            Transform platform = Instantiate(prefab, posicao, prefab.transform.rotation).transform;
 
-            Transform platform = Instantiate(prefab, new Vector3(0, 0, i * 100), prefab.transform.rotation).transform;
             currentPlatforms.Add(platform);
             ConfigurarTriggers(platform);
-
-            if (i == 0)
-            {
-                Transform InitialObstacle = Instantiate(obstacles[0], new Vector3(-2.45f, 0, i * 100 - 50), Quaternion.identity).transform;
-                InitialObstacle.transform.SetParent(platform.transform);
-                obstaculoPrincipal = InitialObstacle;
-                currentObstacles.Add(InitialObstacle);
-
-                Transform obstacle = Instantiate(obstacles[1], new Vector3(-2.45f, 0, i * 100 - 50), Quaternion.identity).transform;
-                obstacle.transform.SetParent(platform.transform);
-                obstaculo_para_Ativar = obstacle.gameObject;
-                obstacle.gameObject.SetActive(false);
-                currentObstacles.Add(obstacle);
-            }
-            else
-            {
-                Transform obstacle = Instantiate(obstacles[i + 1], new Vector3(-2.45f, 0, i * 100 - 50), Quaternion.identity).transform;
-                obstacle.transform.SetParent(platform.transform);
-                currentObstacles.Add(obstacle);
-            }
-            offset += 100;
+            offset += distanciaEntrePlataformas;
         }
     }
 
     public void Recycle(GameObject platform)
     {
         platform.transform.position = new Vector3(0, 0, offset);
-        offset += 100;
+        offset += distanciaEntrePlataformas;
     }
 
     public void AjustarOrigem(float deslocamentoZ)
@@ -75,7 +53,7 @@ public class SpawnPlatform : MonoBehaviour
 
         foreach (PlatformTrigger trigger in triggers)
         {
-            trigger.DefinirSpawn(this);
+            trigger.DefinirSpawn(this, platform);
         }
     }
 }

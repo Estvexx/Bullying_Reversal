@@ -17,6 +17,9 @@ public class Player : MonoBehaviour {
     public Transform groundCheck;
     public ParticleSystem poDosPassos;
 
+    [SerializeField] private CapsuleCollider colliderNormal;
+    [SerializeField] private CapsuleCollider colliderRoll;
+
     public float laneWidth = 2.5f;
     public float laneSpeed = 10f;
     public float gravity = 20f;
@@ -51,6 +54,8 @@ public class Player : MonoBehaviour {
     private bool PodeJogar => estaVivo && jogoIniciado;
 
     private void Start() {
+        colliderNormal.enabled = true;
+        colliderRoll.enabled = false;
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
 
@@ -124,7 +129,7 @@ public class Player : MonoBehaviour {
     public void Morrer() {
         estaVivo = false;
         jumpVelocity = 0f;
-
+        ReporColliderNormal();
         rb.isKinematic = true;
         rb.linearVelocity = Vector3.zero;
         rb.position = new Vector3(rb.position.x, groundY, rb.position.z);
@@ -141,7 +146,9 @@ public class Player : MonoBehaviour {
     private void Saltar() {
         if (estaARolar) {
             StopCoroutine(rollCoroutine);
+            ReporColliderNormal();
             estaARolar = false;
+            rollCoroutine = null;
         }
 
         jumpVelocity = jumpHeight;
@@ -169,8 +176,11 @@ public class Player : MonoBehaviour {
 
     private IEnumerator Rolar() {
         estaARolar = true;
+        AtivarColliderRoll();
         yield return new WaitForSeconds(tempoRolagem);
         estaARolar = false;
+        ReporColliderNormal();
+        rollCoroutine = null;
     }
 
     private IEnumerator AnimacaoEntrada() {
@@ -180,5 +190,15 @@ public class Player : MonoBehaviour {
         jogoIniciado = true;
         StartedRunning?.Invoke();
         RunStarted?.Invoke();
+    }
+
+    private void AtivarColliderRoll() {
+        colliderNormal.enabled = false;
+        colliderRoll.enabled = true;
+    }
+
+    private void ReporColliderNormal() {
+        colliderRoll.enabled = false;
+        colliderNormal.enabled = true;
     }
 }
