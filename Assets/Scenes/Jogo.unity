@@ -1613,7 +1613,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2a29d8bb15469044be92b2593a435d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DamageWarningUI
-  border: {fileID: 0}
+  border: {fileID: 649683203}
   duracao: 10
   velocidadePulso: 8
   alphaMin: 0.15
