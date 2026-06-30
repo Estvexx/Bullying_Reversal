@@ -1,13 +1,15 @@
 using UnityEngine;
 using TMPro;
 
-public class ScoreManager : MonoBehaviour
-{
+public class ScoreManager : MonoBehaviour {
     public GameObject Background_Score;
+    public TextMeshProUGUI scoreLabel;
     public TextMeshProUGUI scoreText;
     public GameObject Background_Multi;
     public TextMeshProUGUI multiplierText;
     public GameObject Background_Books;
+
+    public TextMeshProUGUI booksLabel;
     public TextMeshProUGUI booksText;
 
 
@@ -25,31 +27,26 @@ public class ScoreManager : MonoBehaviour
 
     private bool jogoIniciado = false;
 
-    private void OnEnable()
-    {
+    private void OnEnable() {
         Player.RunStarted += IniciarScore;
         PlayerHealth.AnyPlayerDied += PararScore;
     }
 
-    private void OnDisable()
-    {
+    private void OnDisable() {
         Player.RunStarted -= IniciarScore;
         PlayerHealth.AnyPlayerDied -= PararScore;
     }
 
-    public void IniciarScore()
-    {
+    public void IniciarScore() {
         jogoIniciado = true;
     }
 
-    void Update()
-    {
+    void Update() {
         if (!jogoAtivo || !jogoIniciado) return;
 
         tempoDecorrido += Time.deltaTime;
 
-        if (tempoDecorrido >= intervaloMultiplier && multiplier < multiplierMaximo)
-        {
+        if (tempoDecorrido >= intervaloMultiplier && multiplier < multiplierMaximo) {
             multiplier++;
             tempoDecorrido = 0f;
         }
@@ -59,8 +56,7 @@ public class ScoreManager : MonoBehaviour
         multiplierText.text = multiplier.ToString();
     }
 
-    public void PararScore()
-    {
+    public void PararScore() {
         if (!jogoAtivo) return;
 
         scoreFinal = Mathf.FloorToInt(score);
@@ -68,8 +64,7 @@ public class ScoreManager : MonoBehaviour
 
         PlayerPrefs.SetInt(PlayerPrefsKeys.UltimaPontuacao, scoreFinal);
 
-        if (scoreFinal > PlayerPrefs.GetInt(PlayerPrefsKeys.Recorde, 0))
-        {
+        if (scoreFinal > PlayerPrefs.GetInt(PlayerPrefsKeys.Recorde, 0)) {
             PlayerPrefs.SetInt(PlayerPrefsKeys.Recorde, scoreFinal);
         }
 
@@ -78,14 +73,15 @@ public class ScoreManager : MonoBehaviour
         StartCoroutine(EsconderTexto());
     }
 
-    private System.Collections.IEnumerator EsconderTexto()
-    {
+    private System.Collections.IEnumerator EsconderTexto() {
         yield return new WaitForSeconds(tempoParaEsconderTexto);
         Background_Score.gameObject.SetActive(false);
         scoreText.gameObject.SetActive(false);
+        scoreLabel.gameObject.SetActive(false);
         Background_Multi.gameObject.SetActive(false);
         multiplierText.gameObject.SetActive(false);
         Background_Books.gameObject.SetActive(false);
+        booksLabel.gameObject.SetActive(false);
         booksText.gameObject.SetActive(false);
     }
 
