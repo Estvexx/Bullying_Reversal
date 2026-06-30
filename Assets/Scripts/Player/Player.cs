@@ -130,8 +130,8 @@ public class Player : MonoBehaviour {
         estaVivo = false;
         jumpVelocity = 0f;
         ReporColliderNormal();
-        rb.isKinematic = true;
         rb.linearVelocity = Vector3.zero;
+        rb.isKinematic = true;
         rb.position = new Vector3(rb.position.x, groundY, rb.position.z);
 
         Died?.Invoke();

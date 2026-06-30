@@ -11,11 +11,14 @@ public class GameController : MonoBehaviour {
     public GameObject Character;
     public GameObject RawImage;
     public GameObject Background_Current_Score;
+    public TextMeshProUGUI scoreFinalLabel;
     public TextMeshProUGUI scoreFinalText;
     public GameObject Background_Current_Books;
+    public TextMeshProUGUI booksLabel;
     public TextMeshProUGUI booksFinalText;
     public GameObject Background_Recorde;
     public TextMeshProUGUI recordeFinalText;
+    public TextMeshProUGUI recordeLabel;
 
     public PersonagemGameOver personagemGameOver;
 
@@ -39,11 +42,16 @@ public class GameController : MonoBehaviour {
         RawImage.SetActive(true);
         Background_Current_Score.SetActive(true);
         Background_Current_Books.SetActive(true);
+        scoreFinalLabel.gameObject.SetActive(true);
+        booksLabel.gameObject.SetActive(true);
+        recordeLabel.gameObject.SetActive(true);
+
         if (Background_Recorde != null)
             Background_Recorde.SetActive(true);
 
         scoreFinalText.text = "" + PlayerPrefs.GetInt(PlayerPrefsKeys.UltimaPontuacao, 0);
         booksFinalText.text = "" + PlayerPrefs.GetInt(PlayerPrefsKeys.UltimaBooks, 0);
+
 
         if (recordeFinalText != null) {
             recordeFinalText.gameObject.SetActive(true);
