@@ -1,117 +1,137 @@
-# 🏃 Bullying Reversal
+# Bullying Reversal
 
-> Endless Runner 3D desenvolvido em Unity como projeto escolar.
+Endless runner 3D desenvolvido em Unity como projeto escolar.
 
----
+## Autor
 
-## 👤 Autor
+| Nome                              | Numero de aluno |
+| --------------------------------- | --------------- |
+| Francisco Manuel Pinheiro Esteves | 32181           |
 
-| Nome | Número de Aluno |
-|------|----------------|
-| Francisco Manuel Pinheiro Esteves | 32181 |
+## Entrega
 
----
+Este projeto corresponde a entrega da epoca de melhoria.
 
-## 🛠️ Versão do Unity
+Tema escolhido: jogo 3D do tipo endless runner, com o tema "Bullying Reversal", onde o jogador foge de um perseguidor, evita obstaculos, recolhe livros e tenta sobreviver o maximo de tempo possivel.
 
-**Unity 6000.3.9f1**
+## Versao do Unity
 
----
+Unity 6000.3.9f1
 
-## 📖 Descrição do Jogo
+## Descricao do jogo
 
-**Bullying Reversal** é um jogo de endless runner 3D em que o jogador controla um personagem que corre infinitamente por um cenário, desviando de obstáculos, recolhendo livros e tentando sobreviver o máximo de tempo possível — enquanto um perseguidor corre atrás de si com um ligeiro atraso.
+Bullying Reversal e um endless runner 3D em que o jogador controla uma personagem que corre por um cenario continuo. O objetivo e sobreviver o maximo de tempo possivel, evitar obstaculos, recolher livros e aumentar a pontuacao.
 
-### Funcionalidades Implementadas
+O jogo inclui tambem um perseguidor que segue o jogador com atraso, replicando parte dos movimentos do player. A dificuldade nao depende apenas da velocidade: os obstaculos sao gerados proceduralmente com regras para evitar combinacoes impossiveis.
 
-- **Corrida infinita** com aumento progressivo de velocidade ao longo do tempo
-- **Sistema de lanes** — o jogador pode mover-se entre 3 faixas (esquerda, centro, direita)
-- **Salto e Roll** — mecânicas para evitar obstáculos
-- **Sistema de score** com multiplicador crescente ao longo do tempo
-- **Recolha de livros** com efeito de partículas e som
-- **Inimigo perseguidor** que replica os movimentos do jogador com delay
-- **Ecrã de Game Over** com personagem 3D animado que dança consoante a pontuação obtida
-- **Menu Principal** com visualização da última pontuação, recorde e total de livros recolhidos
-- **Sistema de definições** — controlo de volume de música, volume de sons e toggle de efeitos visuais
-- **Persistência de dados** com PlayerPrefs (última pontuação, recorde, livros totais)
-- **Efeitos de partículas** — poeira nos pés durante a corrida e explosão ao recolher livros
-- **Animação de entrada** — personagem faz uma dança inicial antes de começar a correr
-- **Botão de eliminar dados** guardados em memória
+## Funcionalidades implementadas
 
----
+- Movimento em 3 lanes: esquerda, centro e direita.
+- Salto e roll para ultrapassar diferentes tipos de obstaculos.
+- Obstaculos gerados de forma aleatoria com validacao de seguranca, evitando patterns impossiveis.
+- Recolha de livros espalhados pelas lanes livres do mapa.
+- Sistema de score com multiplicador progressivo.
+- Highscore persistente atraves de PlayerPrefs.
+- Game Over com pontuacao final, livros recolhidos e recorde.
+- Menu principal com ultima pontuacao, recorde e total de livros.
+- Sistema de definicoes para volume de musica, volume de efeitos e ativacao/desativacao de efeitos visuais.
+- Multilinguagem: portugues e ingles.
+- Perseguidor com replay de posicoes atraves de queue.
+- Reducao da taxa de amostragem do perseguidor para melhorar performance em PCs mais fracos.
+- Floating origin para evitar perda de precisao quando o player avanca muito no eixo Z.
+- Colisao de esquina: o jogador pode continuar apos uma batida menos frontal.
+- Feedback visual/camera shake quando o jogador bate de esquina.
+- Persistencia de dados com PlayerPrefs.
+- Som de salto, roll, recolha de livros e musica ambiente.
 
-## 🎮 Jogabilidade
+## Jogabilidade
 
 ### Objetivo
-Correr o máximo de tempo possível, recolher livros e acumular pontuação sem colidir com obstáculos.
+
+Sobreviver o maximo de tempo possivel, recolher livros e obter a maior pontuacao possivel sem colidir frontalmente com obstaculos.
 
 ### Controlos
 
-| Tecla | Ação |
-|-------|------|
-| `A` ou `←` | Mover para a lane da esquerda |
-| `D` ou `→` | Mover para a lane da direita |
-| `W` ou `Space` | Saltar |
-| `S` ou `Left Shift` | Roll (deslizar) |
+| Tecla              | Acao                            |
+| ------------------ | ------------------------------- |
+| A ou seta esquerda | Mover para a lane da esquerda   |
+| D ou seta direita  | Mover para a lane da direita    |
+| W ou Space         | Saltar                          |
+| S ou Left Shift    | Roll / deslizar                 |
+| C                  | Trocar camera, quando aplicavel |
 
-### Regras
-- O jogo começa automaticamente após a animação de entrada do personagem
-- A velocidade aumenta progressivamente ao longo do tempo
-- O multiplicador de pontuação aumenta a cada 10 segundos
-- Colidir com um obstáculo termina o jogo
-- Os livros recolhidos são acumulados no total global entre sessões
-- Consoante a pontuação final, o personagem no ecrã de Game Over executa uma dança diferente
+### Regras principais
 
----
+- O jogo comeca apos a animacao inicial da personagem.
+- A velocidade aumenta progressivamente ao longo do tempo.
+- O multiplicador de score aumenta durante a run.
+- Colisoes frontais terminam a partida.
+- Colisoes de esquina podem permitir continuar, com feedback visual na camera.
+- Os livros recolhidos contam para a run atual e para o total acumulado.
+- O recorde fica guardado entre sessoes.
 
-## 📂 Como Abrir o Projeto
+## Como abrir o projeto
 
-1. Instalar o **Unity Hub** em [unity.com](https://unity.com/download)
-2. Instalar a versão **Unity 6000.3.9f1** através do Unity Hub
-3. Clonar ou descarregar este repositório
-4. No Unity Hub, clicar em **"Add"** e selecionar a pasta do projeto
-5. Abrir o projeto e carregar a cena **`MenuPrincipal`**
-6. Clicar em **Play** para testar o jogo no editor
+1. Instalar o Unity Hub.
+2. Instalar a versao Unity 6000.3.9f1.
+3. Clonar ou descarregar este repositorio.
+4. No Unity Hub, escolher Add e selecionar a pasta do projeto.
+5. Abrir o projeto.
+6. Abrir a cena Assets/Scenes/MenuPrincipal.unity.
+7. Clicar em Play para correr o jogo no Editor.
 
----
+As cenas incluidas no Build Settings sao:
 
-## 🗂️ Assets Multimédia
+- Assets/Scenes/MenuPrincipal.unity
+- Assets/Scenes/Jogo.unity
+- Assets/Scenes/Definicoes.unity
 
-### 🎵 Sons
-- **Formato:** WAV
-- **Fonte:** [freesound.org](https://freesound.org) — sons gratuitos e livres de direitos
-- **Sons implementados:** som de salto, som de roll, som de recolha de livro e música ambiente em loop
-- **Justificação:** o formato WAV garante boa qualidade de áudio sem compressão percetível, adequado para efeitos sonoros curtos e música de fundo
+## Assets multimedia
 
-### 🧍 Modelos 3D
-- **Fonte:** [Mixamo (Adobe)](https://www.mixamo.com) — modelos e animações gratuitos
-- **Modelos usados:** personagem principal, personagem perseguidor e personagem do ecrã de Game Over
-- **Animações:** corrida, salto, roll, corrida rápida, danças e animação de entrada
-- **Justificação:** o Mixamo oferece modelos humanoides com animações de alta qualidade prontos a usar no Unity, poupando tempo de produção
+### Modelos 3D e animacoes
 
-### 🎨 Texturas e Cenário
-- **Fonte:** Unity Asset Store — assets gratuitos
-- **Justificação:** os assets do Unity Asset Store garantem compatibilidade nativa com o motor, qualidade visual consistente e licença de uso em projetos académicos
-- **Nota:** embora os assets sejam de terceiros, o cenário foi **montado e ajustado manualmente peça por peça**, incluindo disposição dos elementos, escala e iluminação
+- Modelos humanoides e animacoes provenientes de Mixamo/Adobe e assets gratuitos.
+- Formatos usados principalmente FBX e assets nativos do Unity.
+- Usados para personagem principal, perseguidor e personagem do ecra de Game Over.
+- Animacoes usadas: entrada, corrida, salto, roll, morte, perseguicao e dancas de Game Over.
 
----
+### Texturas e materiais
 
-## 📋 Observações
+- Foram usados assets gratuitos da Unity Asset Store e texturas em formatos PNG e TGA.
+- Algumas texturas de pacotes externos usam resolucoes altas, incluindo mapas de 2048 e 4096.
+- As texturas maiores foram mantidas apenas quando necessarias para os materiais usados em cena.
+- Existe trabalho de otimizacao possivel em texturas grandes de terceiros, especialmente quando nao sao usadas diretamente por cenas, prefabs ou materiais ativos.
 
-- O volume da música e dos sons é guardado entre sessões via PlayerPrefs
-- Os efeitos visuais de partículas podem ser desativados nas definições
-- O botão vermelho (🗑️) no menu principal elimina todos os dados guardados (pontuação, recorde e livros)
-- O perseguidor só aparece na cena quando o personagem principal começa a correr, para não interferir com a animação de entrada
-- O personagem no ecrã de Game Over é independente do personagem principal e executa animações diferentes consoante a pontuação:
-  - Score ≤ 1000 → Dança 1
-  - Score entre 1000 e 2000 → Dança 2
-  - Score > 2000 → Dança 3
+### Sons
 
----
+- Sons em formato WAV comprimido para Vorbis.
+- Usados para salto, roll, recolha de livro e musica ambiente.
 
-## 🎥 Demonstração (Secção para demonstração não realizada em contexto de sala de aula)
+## Otimizacoes e qualidade tecnica
 
-> Demonstração do inimigo perseguidor a replicar os movimentos do jogador com delay, assim como um pouco do jogo.
-[▶️ Ver vídeo no YouTube](https://youtu.be/qtlIHoXzD0U)
+- Remocao de FindObjectOfType/FindFirstObjectByType nos principais scripts.
+- Referencias configuradas por Inspector quando necessario.
+- Uso de Animator.StringToHash para parametros do Animator.
+- Tempos configuraveis no Inspector.
+- SomManager com AudioSources separados para musica e efeitos.
+- SomManager com DontDestroyOnLoad e protecao contra duplicados.
+- Player e Inimigo comunicam por eventos, reduzindo acoplamento direto.
+- PlayerHealth dispara eventos para score, livros e Game Over.
+- Floating origin aplicado para controlar o crescimento do eixo Z.
+- Obstaculos antigos do SpawnPlatform foram substituidos por ObstacleSpawner procedural.
 
-*Projeto desenvolvido para a unidade curricular de Tecnoligas e Multimédia — 2025/2026*
+## Observacoes e lacunas
+
+- O projeto ainda pode beneficiar de uma limpeza final de assets grandes nao utilizados.
+- Alguns assets de terceiros podem aumentar o tamanho do repositorio e o numero de batches.
+- A geracao procedural dos obstaculos segue regras de seguranca, mas pode ser afinada com mais patterns no futuro.
+- O sistema de linguas implementado cobre textos principais em portugues e ingles.
+- O projeto nao usa namespaces nem assembly definitions, por decisao de manter a estrutura simples para um projeto individual pequeno.
+
+## Demonstracao
+
+Video de demonstracao:
+
+https://youtu.be/qtlIHoXzD0U
+
+Projeto desenvolvido para a unidade curricular de Tecnologias e Multimedia - 2025/2026.
